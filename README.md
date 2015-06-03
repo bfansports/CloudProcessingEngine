@@ -1,4 +1,3 @@
-# CloudProcess
-Open source stack using AWS services to dispatch Tasks across workers
+Cloud Transcode Jekyll documentation
 
-TODO: Move the Clous Transcode CORE in here. Make it generic so the engine can be used to process any task.
+See for more details: http://bruth.github.io/jekyll-docs-template/
