@@ -5,24 +5,32 @@
  * It opens the JSON input and starts a execute a callback corresponding to the command
  */
 
-require __DIR__ . '/utils/Utils.php';
-require __DIR__ . '/utils/SQSUtils.php';
+require __DIR__ . "/../vendor/autoload.php";
+
+use Aws\Swf\Exception;
+use SA\CpeSdk;
 
 class InputPoller
 {
     private $debug;
     private $config;
-    private $commandsMap;
-    private $SQSUtils;
+    private $cpeSqsListener;
+    private $cpeSwfHandler;
+    private $cpeLogger;
+    
+    const INVALID_JSON = "INVALID_JSON"; 
     
     function __construct($config)
     {
         global $debug;
+        global $cpeLogger;
         
-        $this->config = $config;
-        $this->debug  = $debug;
+        $this->config    = $config;
+        $this->debug     = $debug;
+        $this->cpeLogger = $cpeLogger;
         
-        // Mapping event from the ComSDK with functions to handle them
+        // Mapping event/methods
+        // Events come from clients using the CpeClientSDK
         $this->typesMap = [
             'START_JOB'            => 'start_job',
             'CANCEL_JOB'           => 'cancel_job',
@@ -33,8 +41,11 @@ class InputPoller
             'GET_ACTIVITY_STATUS'  => 'get_activity_status',
         ];
         
-        // SQSUtils for communicating with the clients
-        $this->SQSUtils = new SQSUtils($this->debug);
+        // For listening to the Input SQS queue
+        $this->cpeSqsListener = new CpeSdk\Sqs\CpeSqsListener($this->debug);
+
+        // For creating SWF object 
+        $this->cpeSwfHandler  = new CpeSdk\Swf\CpeSwfHandler();
     }
     
     // Poll from the 'input' SQS queue of all clients
@@ -48,10 +59,10 @@ class InputPoller
             // Long Polling messages from client input queue
             $queue = $client->{'queues'}->{'input'};
             try {
-                if ($msg = $this->SQSUtils->receive_message($queue, 10))
+                if ($msg = $this->cpeSqsListener->receive_message($queue, 10))
                 {
                     if (!($decoded = json_decode($msg['Body'])))
-                        log_out(
+                        $this->cpeLogger->log_out(
                             "ERROR", 
                             basename(__FILE__), 
                             "JSON data invalid in queue: '$queue'");
@@ -59,10 +70,10 @@ class InputPoller
                         $this->handle_message($decoded, $client);
                     
                     // Message polled. We delete it from SQS
-                    $this->SQSUtils->delete_message($queue, $msg);
+                    $this->cpeSqsListener->delete_message($queue, $msg);
                 }
-            } catch (Exception $e) {
-                log_out(
+            } catch (CpeSdk\CpeException $e) {
+                $this->cpeLogger->log_out(
                     "ERROR", 
                     basename(__FILE__), 
                     $e->getMessage());
@@ -78,7 +89,7 @@ class InputPoller
         // Do we know this input ?
         if (!isset($this->typesMap[$message->{"type"}]))
         {
-            log_out(
+            $this->cpeLogger->log_out(
                 "ERROR", 
                 basename(__FILE__), 
                 "Command '" . $message->{"type"} . "' is unknown! Ignoring ..."
@@ -86,13 +97,13 @@ class InputPoller
             return;
         }
 
-        log_out(
+        $this->cpeLogger->log_out(
             "INFO", 
             basename(__FILE__), 
             "Received message '" . $message->{"type"}  . "'"
         );
         if ($this->debug)
-            log_out(
+            $this->cpeLogger->log_out(
                 "INFO", 
                 basename(__FILE__), 
                 "Details:\n" . json_encode($message, JSON_PRETTY_PRINT)
@@ -110,11 +121,8 @@ class InputPoller
     // Start a new workflow in SWF to initiate new transcoding job
     private function start_job($message, $client)
     {
-        // SWF client
-        global $swf;
-
         if ($this->debug)
-            log_out(
+            $this->cpeLogger->log_out(
                 "DEBUG",
                 basename(__FILE__),
                 "Starting new workflow!"
@@ -130,7 +138,7 @@ class InputPoller
 
         // Request start SWF workflow
         try {
-            $workflowRunId = $swf->startWorkflowExecution(array(
+            $workflowRunId = $this->cpeSwfHandler->startWorkflowExecution(array(
                     "domain"       => $message->{'data'}->{'workflow'}->{'domain'},
                     "workflowId"   => uniqid('', true),
                     "workflowType" => $workflowType,
@@ -138,12 +146,12 @@ class InputPoller
                     "input"        => json_encode($message)
                 ));
 
-            log_out(
+            $this->cpeLogger->log_out(
                 "INFO",
                 basename(__FILE__),
                 "New workflow submitted to SWF: ".$workflowRunId->get('runId'));
         } catch (\Aws\Swf\Exception\SwfException $e) {
-            log_out(
+            $this->cpeLogger->log_out(
                 "ERROR",
                 basename(__FILE__),
                 "Unable to start workflow!"
@@ -162,10 +170,10 @@ class InputPoller
             !isset($message->{"job_id"}) || $message->{"job_id"} == "" || 
             !isset($message->{"type"})   || $message->{"type"} == "" || 
             !isset($message->{"data"})   || $message->{"data"} == "")
-            throw new Exception("'time', 'type', 'job_id' or 'data' fields missing in JSON message file!");
+            throw new CpeSdk\CpeException("'time', 'type', 'job_id' or 'data' fields missing in JSON message file!", self::INVALID_JSON);
         
         if (!isset($message->{'data'}->{'workflow'}))
-            throw new Exception("Input doesn't contain any workflow information. You must provide the workflow you want to sent this job to!");
+            throw new CpeSdk\Cpexception("Input doesn't contain any workflow information. You must provide the workflow you want to sent this job to!", self::INVALID_JSON);
     }
 }
 
@@ -175,6 +183,7 @@ class InputPoller
  */
 
 $debug = false;
+$cpeLogger = new CpeSdk\CpeLogger();
 
 function usage($defaultConfigFile)
 {
@@ -187,6 +196,7 @@ function usage($defaultConfigFile)
 function check_input_parameters(&$defaultConfigFile)
 {
     global $debug;
+    global $cpeLogger;
     
     // Handle input parameters
     if (!($options = getopt("c:hd")))
@@ -200,7 +210,7 @@ function check_input_parameters(&$defaultConfigFile)
     
     if (isset($options['c']))
     {
-        log_out(
+        $cpeLogger->log_out(
             "INFO", 
             basename(__FILE__), 
             "Custom config file provided: '" . $options['c'] . "'"
@@ -210,7 +220,7 @@ function check_input_parameters(&$defaultConfigFile)
     
     if (!($config = json_decode(file_get_contents($defaultConfigFile))))
     {
-        log_out(
+        $cpeLogger->log_out(
             "FATAL", 
             basename(__FILE__), 
             "Configuration file '$defaultConfigFile' invalid!"
@@ -220,28 +230,23 @@ function check_input_parameters(&$defaultConfigFile)
 
     # Validate against JSON Schemas
     # if (($err = validate_json($config, "config/mainConfig.json")))
-        # exit("JSON main configuration file invalid! Details:\n".$err);
+    # exit("JSON main configuration file invalid! Details:\n".$err);
 
     return $config;
 }
 
 // Get config file
-$defaultConfigFile = realpath(dirname(__FILE__)) . "/../config/cloudTranscodeConfig.json";
+$defaultConfigFile =
+    realpath(dirname(__FILE__)) . "/../config/cloudTranscodeConfig.json";
 $config = check_input_parameters($defaultConfigFile);
-
-# Load AWS credentials in env vars if any
-load_aws_creds($config);
-# Init AWS connection
-init_aws();
-
-log_out("INFO", basename(__FILE__), $config->{'clients'});
+$cpeLogger->log_out("INFO", basename(__FILE__), $config->{'clients'});
 
 // Create InputPoller object
 try {
     $inputPoller = new InputPoller($config);
 } 
-catch (Exception $e) {
-    log_out(
+catch (\Exception $e) {
+    $cpeLogger->log_out(
         "FATAL", 
         basename(__FILE__), 
         $e->getMessage()

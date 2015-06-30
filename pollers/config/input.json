@@ -1,0 +1,11 @@
+{
+    "clients": [
+	{
+	    "name": "Test Client",
+	    "queues": {
+		"input": "https://sqs.us-east-1.amazonaws.com/441276146445/nico-ct-input",
+		"output": "https://sqs.us-east-1.amazonaws.com/441276146445/nico-ct-output"
+	    }
+	}
+    ]
+}
