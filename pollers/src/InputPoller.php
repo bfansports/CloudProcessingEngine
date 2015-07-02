@@ -72,7 +72,7 @@ class InputPoller
         $this->cpeSqsListener = new CpeSdk\Sqs\CpeSqsListener($this->debug);
 
         // For creating SWF object 
-        $this->cpeSwfHandler  = new CpeSdk\Swf\CpeSwfHandler();
+        $this->cpeSwfHandler  = new CpeSdk\Swf\CpeSwfHandler($this->debug);
     }
     
     // Poll from the 'input' SQS queue of all clients
@@ -95,16 +95,17 @@ class InputPoller
                             "JSON data invalid in queue: '$queue'");
                     else                    
                         $this->handle_message($decoded, $client);
-                    
-                    // Message polled. We delete it from SQS
-                    $this->cpeSqsListener->delete_message($queue, $msg);
                 }
             } catch (CpeSdk\CpeException $e) {
                 $this->cpeLogger->log_out(
                     "ERROR", 
                     basename(__FILE__), 
-                    $e->getMessage());
+                    $e->getMessage().print_r($msg, true));
             }
+            
+            // Message polled. Valid or not, we delete it from SQS
+            if ($msg)
+                $this->cpeSqsListener->delete_message($queue, $msg);
         }
     }
 
@@ -131,7 +132,7 @@ class InputPoller
         );
         if ($this->debug)
             $this->cpeLogger->log_out(
-                "INFO", 
+                "DEBUG", 
                 basename(__FILE__), 
                 "Details:\n" . json_encode($message, JSON_PRETTY_PRINT)
             );
@@ -165,7 +166,7 @@ class InputPoller
 
         // Request start SWF workflow
         try {
-            $workflowRunId = $this->cpeSwfHandler->startWorkflowExecution(array(
+            $workflowRunId = $this->cpeSwfHandler->swf->startWorkflowExecution(array(
                     "domain"       => $message->{'data'}->{'workflow'}->{'domain'},
                     "workflowId"   => uniqid('', true),
                     "workflowType" => $workflowType,
@@ -197,10 +198,12 @@ class InputPoller
             !isset($message->{"job_id"}) || $message->{"job_id"} == "" || 
             !isset($message->{"type"})   || $message->{"type"} == "" || 
             !isset($message->{"data"})   || $message->{"data"} == "")
-            throw new CpeSdk\CpeException("'time', 'type', 'job_id' or 'data' fields missing in JSON message file!", self::INVALID_JSON);
+            throw new CpeSdk\CpeException("'time', 'type', 'job_id' or 'data' fields missing in JSON message file!",
+                self::INVALID_JSON);
         
         if (!isset($message->{'data'}->{'workflow'}))
-            throw new CpeSdk\Cpexception("Input doesn't contain any workflow information. You must provide the workflow you want to sent this job to!", self::INVALID_JSON);
+            throw new CpeSdk\Cpexception("Input doesn't contain any workflow information. You must provide the workflow you want to sent this job to!",
+                self::INVALID_JSON);
     }
 }
 
@@ -214,23 +217,23 @@ $cpeLogger = new CpeSdk\CpeLogger();
 
 function usage($defaultConfigFile)
 {
-    echo("Usage: php ". basename(__FILE__) . " [-h] [-c <path to JSON config file>]\n");
+    echo("Usage: php ". basename(__FILE__) . " [-h] -c <config_path>\n");
     echo("-h: Print this help\n");
-    echo("-c <file path>: Optional parameter to override the default configuration file: '$defaultConfigFile'.\n");
+    echo("-c <config_path>: Path to the config file.\n");
     exit(0);
 }
 
-function check_input_parameters(&$defaultConfigFile)
+function check_input_parameters()
 {
     global $debug;
     global $cpeLogger;
     
     // Handle input parameters
     if (!($options = getopt("c:hd")))
-        usage($defaultConfigFile);
+        usage();
     
     if (isset($options['h']))
-        usage($defaultConfigFile);
+        usage();
     
     if (isset($options['d']))
         $debug = true;
@@ -240,17 +243,17 @@ function check_input_parameters(&$defaultConfigFile)
         $cpeLogger->log_out(
             "INFO", 
             basename(__FILE__), 
-            "Custom config file provided: '" . $options['c'] . "'"
+            "Config file: '" . $options['c'] . "'"
         );
-        $defaultConfigFile = $options['c'];
+        $configFile = $options['c'];
     }
     
-    if (!($config = json_decode(file_get_contents($defaultConfigFile))))
+    if (!($config = json_decode(file_get_contents($configFile))))
     {
         $cpeLogger->log_out(
             "FATAL", 
             basename(__FILE__), 
-            "Configuration file '$defaultConfigFile' invalid!"
+            "Configuration file '$configFile' invalid!"
         );
         exit(1);
     }
@@ -263,16 +266,14 @@ function check_input_parameters(&$defaultConfigFile)
 }
 
 // Get config file
-$defaultConfigFile =
-    realpath(dirname(__FILE__)) . "/../config/cloudTranscodeConfig.json";
-$config = check_input_parameters($defaultConfigFile);
+$config = check_input_parameters();
 $cpeLogger->log_out("INFO", basename(__FILE__), $config->{'clients'});
 
 // Create InputPoller object
 try {
     $inputPoller = new InputPoller($config);
 } 
-catch (\Exception $e) {
+catch (CpeSdk\CpeException $e) {
     $cpeLogger->log_out(
         "FATAL", 
         basename(__FILE__), 
