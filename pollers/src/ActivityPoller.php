@@ -176,8 +176,7 @@ class ActivityPoller
                 $activityToHandle = $knownActivity;
                 
                 // Load the file implementing the activity
-                $file = $activityToHandle->{"file"};
-                require_once $file;
+                require_once $activityToHandle->{"file"};
                 
                 // Instantiate the Activity class that will process Tasks
                 $this->activityHandler = 
@@ -209,7 +208,7 @@ class ActivityPoller
 
 // Globals
 $debug = false;
-$cpeLogger = new CpeSdk\CpeLogger();
+$cpeLogger;
 
 // Usage
 function usage($defaultConfigFile)
@@ -282,6 +281,7 @@ function check_input_parameters(&$defaultConfigFile)
         usage($defaultConfigFile);
     }
     $activityName = $options['A'];
+    $cpeLogger = new CpeSdk\CpeLogger(null, $activityName);
     
     // Activity version
     if (!isset($options['V']))

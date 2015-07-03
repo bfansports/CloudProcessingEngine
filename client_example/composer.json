@@ -1,10 +1,4 @@
 {
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/sportarchive/CloudTranscode-PHP-SDK.git"
-        }
-    ],
     "require": {
         "aws/aws-sdk-php": "2.*",
 	"sportarchive/cloud-transcode-php-sdk": "dev-master"
