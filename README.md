@@ -6,17 +6,19 @@ CPE allows you to distribute and scale processing accross many machines located 
 
 You can process things at scale. Any tasks that takes an input and do some processing is eligible for CPE.
 
-Do use CPE, you first need to deploy the CPE stack. Then you can create your Activities (worker) that will handle the processing for your workflow.
+Do use CPE, you first need to deploy the CPE stack. Then you can create your Activities (workers) that will handle the processing for your workflow. You can have several types of workers handling different activities in your workflow.
 
-Transcoding media files (videos, audio, documents, etc) requires processing power on demand and must scale if a lot of transcoding is requiered. This is the original need that gave birth to CPE.
+## Example
 
-The Cloud Transcode project implements the transcoding activities that can be used by CPE.
+Transcoding media files (videos, audio, documents, etc) requires processing power on demand and must scale if a lot of transcoding is required. This need gave birth to CPE.
 
-See the Cloud Transcode documentation for a working example: https://github.com/sportarchive/CloudTranscode
+The Cloud Transcode (CT) project implements the transcoding activities (workers) that used by CPE to transcode files to different formats. CT workers download files from AWS S3, transcode them and push them back to S3.
+
+See the Cloud Transcode documentation for more information: https://github.com/sportarchive/CloudTranscode
 
 # Documentation
 
-Read the documentation for more information about CPE and how to:
+Read the CPE documentation for more information about CPE and how to:
 - Create your workflow
 - Create and use your own activities
 - Run the stack locally using Vagrant and Docker
