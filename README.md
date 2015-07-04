@@ -32,7 +32,7 @@ See: http://sportarchive.github.io/CloudProcessingEngine/
 
 CPE use the following AWS services:
 - [SWF](http://aws.amazon.com/swf/): Workflow mangement. SWF allows you to create processing workflows so you can chain activities. Each activity is handled by a worker who will process a certain task using input data.
-- [SQS](http://aws.amazon.com/swf/): Messaging and communication. Clients using the CPE stack can send commands to the stack using SQS to initiate a new workflow for example. They receive job updates, progress, and output results from SQS as well.
+- [SQS](http://aws.amazon.com/sqs/): Messaging and communication. Clients using the CPE stack can send commands to the stack using SQS to initiate a new workflow for example. They receive job updates, progress, and output results from SQS as well.
 
 Before getting started, you need a good understanding of those two services. Read the AWS documentation.
 
