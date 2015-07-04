@@ -1,5 +1,7 @@
 # What is the Cloud Processing Engine (CPE) ?
 
+[![Join the chat at https://gitter.im/sportarchive/CloudProcessingEngine](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/sportarchive/CloudProcessingEngine?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 CPE allows you to distribute and scale processing accross many machines located anywhere (any cloud provider or local). If you have processes that need to scale, then CPE is for you. 
 
 Example:
