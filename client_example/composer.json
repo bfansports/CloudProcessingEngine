@@ -1,6 +1,0 @@
-{
-    "require": {
-        "aws/aws-sdk-php": "2.*",
-	"sportarchive/cloud-transcode-php-sdk": "dev-master"
-    }
-}
