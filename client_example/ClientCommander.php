@@ -1,15 +1,24 @@
 <?php
 
+/**
+ * This is an example of client application that send commands to the CPE stack
+ * Your application initiate new workflows
+ * Using the CpeClientSdk it's easy to send the proper SQS message to the CPE stack
+ * You message will be read by the CPE Stack InputPoller process
+ * The InputPoller will read your message and initiate the proper actions
+ * Such as: Start a new workflow
+ **/
+
 require __DIR__ . "/vendor/autoload.php";
 
 function start_job($args)
 {
-    global $CTComSDK;
+    global $CpeClientSdk;
     global $clientInfo;
 
     if (count($args) != 2)
     {
-        print("[ERROR] Invalid args! Please provide a filename after the command!\n");
+        print("[ERROR] Invalid args! Please provide a filename after the command! (try again if you used [tab] to find your file. It fails somehow.)\n");
         return;
     }
     if (!file_exists($args[1]))
@@ -28,7 +37,7 @@ function start_job($args)
         // You must JSON decode it
         $decodedClient = json_decode($clientInfo);
         
-        $CTComSDK->start_job($decodedClient, $content);
+        $CpeClientSdk->start_job($decodedClient, $content);
     }
     catch (Exception $e) {
         print("[ERROR] " . $e->getMessage() . "\n");
@@ -126,7 +135,7 @@ catch (Exception $e) {
 
 // Instanciate ComSDK to communicate with the stack
 try {
-    $CTComSDK = new SA\CTComSDK($key, $secret, $region, $debug);
+    $CpeClientSdk = new SA\CpeClientSdk($key, $secret, $region, $debug);
 } catch (Exception $e) {
     exit($e->getMessage());
   }

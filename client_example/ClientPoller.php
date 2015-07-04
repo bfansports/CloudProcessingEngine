@@ -1,24 +1,32 @@
 <?php
 
+/**
+ * This is an example of a client application listening for SQS messages
+ * The CPE stack sends output message back to the client using the "output" SQS queue
+ * The application needs to listen to this output queue to get updates 
+ * Using the CpeClientSdk you can easily listen to the SQS
+ */
+
 require __DIR__ . "/vendor/autoload.php";
 
-function poll_SQS_queues($CTComSDK, $decodedClient)
+function poll_SQS_queues($CpeClientSdk, $decodedClient)
 {
     try {
         // Will poll for 2 seconds
-        if ($msg = $CTComSDK->receive_message($decodedClient, 10))
+        if ($msg = $CpeClientSdk->receive_message($decodedClient, 10))
         {
             if (!($decoded = json_decode($msg['Body'])))
                 throw new Exception("JSON output data is invalid!");
             else                    
                 handle_output($decoded);
-                    
-            // Message polled. We delete it from SQS
-            $CTComSDK->delete_message($decodedClient, $msg);
         }
     } catch (Exception $e) {
         print("[ERROR] " . $e->getMessage() . "\n");
     }
+                    
+    // Message polled. We delete it from SQS
+    if ($msg)
+        $CpeClientSdk->delete_message($decodedClient, $msg);
 }
 
 function handle_output($output)
@@ -27,6 +35,15 @@ function handle_output($output)
     
     if ($debug)
         print_r($output);
+
+    if (!isset($output->{'data'}) ||
+        !isset($output->{'time'}) ||
+        !isset($output->{'job_id'}) ||
+        !isset($output->{'type'}))
+    {
+        print("[ERROR] SQS message JSON format invalid! This is not a valid CPE message. Refer to the Client SDK documentation: http://sportarchive.github.io/CloudProcessingEngine-Client-SDK\n");
+        return false;
+    }
     
     if (isset($output->{'data'}->{'activity'}))
         print($output->{'time'} . " " . $output->{'type'}."(" 
@@ -108,7 +125,7 @@ check_input_parameters();
 
 // Instanciate ComSDK to communicate with the stack
 try {
-    $CTComSDK = new SA\CTComSDK($key, $secret, $region, $debug);
+    $CpeClientSdk = new SA\CpeClientSdk($key, $secret, $region, $debug);
 } catch (Exception $e) {
     exit($e->getMessage());
   }
@@ -118,4 +135,4 @@ $decodedClient = json_decode($clientInfo);
 
 // Keep polling for output messages!
 while (42)
-    poll_SQS_queues($CTComSDK, $decodedClient);
+    poll_SQS_queues($CpeClientSdk, $decodedClient);
