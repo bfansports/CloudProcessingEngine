@@ -135,6 +135,12 @@ class ActivityPoller
         $reason = 0;
         $details = 0;
         try {
+            // Check activity task
+            $this->activityHandler->do_task_check($activityTask);
+            // Perform input validation
+            $this->activityHandler->do_input_validation($activityTask);
+            // Initialize Activity
+            $this->activityHandler->do_init($activityTask);
             // Run activity task
             $result = $this->activityHandler->do_activity($activityTask);
         } catch (CpeSdk\CpeException $e) {

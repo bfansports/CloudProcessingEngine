@@ -1,17 +1,22 @@
 {
+    "workflow": {
+        "name": "SATranscode",
+        "version": "1.0",
+        "taskList": "sa_validate",
+        "domain": "SADomain"
+    },
     "input_type": "VIDEO",
-    "input_bucket": "ct-my-bucket-in",
-    "input_file": "/input1/test1.mp4",
-    "outputs": [
-	{
-	    "output_type": "THUMB",
-	    "mode": "snapshot",
-	    "output_bucket": "ct-my-bucket-out",
-	    "output_file": "/output1/thumbs/test1_thumb.jpg",
-	    "s3_rrs": true,
-	    "s3_encrypt": true,
-	    "size": "160x120",
-	    "snapshot_sec": 5
-	}
-    ]
+    "input_bucket": "cloudtranscode-dev",
+    "input_file": "/input/test1.mp4",
+    "output": 
+    {
+	"output_type": "THUMB",
+	"mode": "snapshot",
+	"output_bucket": "cloudtranscode-dev",
+	"output_file": "/output/thumbs/test1_thumb.jpg",
+	"s3_rrs": true,
+	"s3_encrypt": true,
+	"size": "160x120",
+	"snapshot_sec": 5
+    }
 }
