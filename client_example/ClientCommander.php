@@ -50,14 +50,10 @@ function start_job($args)
  */
 
 $help = <<<EOF
-
 Use the following commands to send messages to the stack.
-You can create a new job for example.
 
 Commands:
 start_job <filepath>: Start a new job. Pass a JSON file containing the instruction (see: input_samples folder)
-[more commands to come]
-
 
 EOF;
 
@@ -117,9 +113,9 @@ function check_input_parameters()
         echo("-h: Print this help\n");
         echo("-d: Debug mode\n");
         echo("-c: configFile\n");
-        echo("-k <AWS key>\n");
-        echo("-s <AWS secret>\n");
-        echo("-r <AWS region>\n\n");
+        echo("-k <AWS key>: Optional. Will use env variables by default\n");
+        echo("-s <AWS secret>: Optional. Will use env variables by default\n");
+        echo("-r <AWS region>: Optional. Will use env variables by default\n\n");
         echo($help);
         exit(0);
     }

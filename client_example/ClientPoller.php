@@ -64,13 +64,13 @@ $secret = getenv("AWS_SECRET_KEY");
 
 function usage()
 {
-    echo("Usage: php ". basename(__FILE__) . " -c configFile [-h] -k <key> -s <secret> -r <region>\n");
+    echo("Usage: php ". basename(__FILE__) . " -c configFile [-h] [-k <key>] [-s <secret>] [-r <region>]\n");
     echo("-h: Print this help\n");
     echo("-d: Debug mode\n");
     echo("-c: configFile\n");
-    echo("-k <AWS key>\n");
-    echo("-s <AWS secret>\n");
-    echo("-r <AWS region>\n");
+    echo("-k <AWS key>: Optional. Will use env variables by default\n");
+    echo("-s <AWS secret>: Optional. Will use env variables by default\n");
+    echo("-r <AWS region>: Optional. Will use env variables by default\n");
     exit(0);
 }
 
