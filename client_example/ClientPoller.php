@@ -15,26 +15,29 @@ function poll_SQS_queues($CpeClientSdk, $decodedClient)
         // Will poll for 2 seconds
         if ($msg = $CpeClientSdk->receive_message($decodedClient, 10))
         {
-            if (!($decoded = json_decode($msg['Body'])))
-                throw new Exception("JSON output data is invalid!");
-            else                    
-                handle_output($decoded);
+            if (!($decoded = json_decode($msg['Body']))) {
+                            throw new Exception("JSON output data is invalid!");
+            } else {
+                            handle_output($decoded);
+            }
         }
     } catch (Exception $e) {
         print("[ERROR] " . $e->getMessage() . "\n");
     }
                     
     // Message polled. We delete it from SQS
-    if ($msg)
-        $CpeClientSdk->delete_message($decodedClient, $msg);
-}
+    if ($msg) {
+            $CpeClientSdk->delete_message($decodedClient, $msg);
+    }
+    }
 
 function handle_output($output)
 {
     global $debug;
     
-    if ($debug)
-        print_r($output);
+    if ($debug) {
+            print_r($output);
+    }
 
     if (!isset($output->{'data'}) ||
         !isset($output->{'time'}) ||
@@ -84,42 +87,51 @@ function check_input_parameters()
     global $argv;
     
     // Handle input parameters
-    if (!($options = getopt("c:k::s::r::hd")))
-        usage();
-    if (isset($options['h']))
-        usage();
+    if (!($options = getopt("c:k::s::r::hd"))) {
+            usage();
+    }
+    if (isset($options['h'])) {
+            usage();
+    }
     
-    if (isset($options['d']))
-        $debug = true;
+    if (isset($options['d'])) {
+            $debug = true;
+    }
 
     if (isset($options['c']))
     {
         $clientConfFile = $options['c'];
-        if (!file_exists($clientConfFile))
-            throw new Exception("The client config file is not valid!");
-        if (!($clientInfo = file_get_contents($clientConfFile)))
-            throw new Exception("Unable to read the file");
+        if (!file_exists($clientConfFile)) {
+                    throw new Exception("The client config file is not valid!");
+        }
+        if (!($clientInfo = file_get_contents($clientConfFile))) {
+                    throw new Exception("Unable to read the file");
+        }
+    } else {
+            throw new Exception("Please provide the client config file!");
     }
-    else
-        throw new Exception("Please provide the client config file!");
   
-    if (isset($options['k']))
-        $key = $options['k'];
-    else 
-        $key = getenv("AWS_ACCESS_KEY_ID");
+    if (isset($options['k'])) {
+            $key = $options['k'];
+    } else {
+            $key = getenv("AWS_ACCESS_KEY_ID");
+    }
     
-    if (isset($options['s']))
-        $secret = $options['s'];
-    else 
-        $secret = getenv("AWS_SECRET_KEY");
+    if (isset($options['s'])) {
+            $secret = $options['s'];
+    } else {
+            $secret = getenv("AWS_SECRET_KEY");
+    }
 
-    if (isset($options['r']))
-        $region = $options['r'];
-    else 
-        $region = getenv("AWS_DEFAULT_REGION");
-    if (!$region)
-        throw new Exception("Please provide your AWS region as parameter or using AWS_DEFAULT_REGION env var !");
-}
+    if (isset($options['r'])) {
+            $region = $options['r'];
+    } else {
+            $region = getenv("AWS_DEFAULT_REGION");
+    }
+    if (!$region) {
+            throw new Exception("Please provide your AWS region as parameter or using AWS_DEFAULT_REGION env var !");
+    }
+    }
 
 check_input_parameters();
 
@@ -134,5 +146,6 @@ try {
 $decodedClient = json_decode($clientInfo);
 
 // Keep polling for output messages!
-while (42)
+while (42) {
     poll_SQS_queues($CpeClientSdk, $decodedClient);
+}
