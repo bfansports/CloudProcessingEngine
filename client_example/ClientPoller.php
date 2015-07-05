@@ -46,11 +46,11 @@ function handle_output($output)
     }
     
     if (isset($output->{'data'}->{'activity'}))
-        print($output->{'time'} . " " . $output->{'type'}."(" 
-            . $output->{'data'}->{'activity'}->{'activityId'}  . ")\n");
+        print($output->{'time'} . " " . $output->{'type'} . "(" 
+            . $output->{'data'}->{'activity'}->{'activityId'} . ")\n");
     else
-        print($output->{'time'} . " " . $output->{'type'}."(" 
-            . $output->{'data'}->{'workflow'}->{'workflowId'}  . ")\n");
+        print($output->{'time'} . " " . $output->{'type'} . "(" 
+            . $output->{'data'}->{'workflow'}->{'workflowId'} . ")\n");
 }
 
 /**
@@ -64,7 +64,7 @@ $secret = getenv("AWS_SECRET_KEY");
 
 function usage()
 {
-    echo("Usage: php ". basename(__FILE__) . " -c configFile [-h] [-k <key>] [-s <secret>] [-r <region>]\n");
+    echo("Usage: php " . basename(__FILE__) . " -c configFile [-h] [-k <key>] [-s <secret>] [-r <region>]\n");
     echo("-h: Print this help\n");
     echo("-d: Debug mode\n");
     echo("-c: configFile\n");
