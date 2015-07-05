@@ -9,60 +9,43 @@ order: 1
 
 The beauty of Cloud services is that you can use them accross the Internet. Wherever you are.
 
-<b>Cloud Transcode (CT) is your own Cloud service.</b><br>
-You run it Locally or in the Cloud and your clients can use it from anywhere.
+<b>The Cloud Processing Engine (CPE) is your own cloud service for processing tasks at scale.</b><br>
+You run it Locally or in the Cloud and your client applications can use it from anywhere.
 
-CT uses the following Cloud services to make this happen:
+CPE uses the following Cloud services to make this happen:
 
-   - Track workflows: [SWF](http://aws.amazon.com/swf/)
-   - Communicate: [SQS](http://aws.amazon.com/sqs/)
-   - Store files: [S3](http://aws.amazon.com/s3/)
+   - [SWF](http://aws.amazon.com/swf/): Handles workflow and execution sequences. You can orchestrate the execution of your tasks, create dependencies, sequences, run them in parallel, etc. You can many type of activity workers performing different tasks.
+   - [SQS](http://aws.amazon.com/sqs/): Handles communication between the CPE stack and your client application which initiate jobs and listen for incoming updates from CPE.
 
-As long as you have an Internet connection and an Amazon AWS account, <b>you can run it anywhere and use it from anywhere.</b>
+As long as you have an Internet connection and an Amazon AWS account, <b>you can run this CPE stack anywhere and use it from anywhere.</b>
 
 ### Concept
 
-On one side there is the CT Stack, running somewhere in the Cloud or Locally.
+On one side there is the CPE Stack, running somewhere in the Cloud or Locally. On the other side, there are client applications, using CPE and its workers for processing stuffs. They commands to the stack through SQS and listen to SQS for updates (progress statuses, errors, output, etc).
 
-On the other side, there are Clients, using the Stack for transcoding stuffs. They send jobs to the stack and listen for updates from the stack.
+The stack uses AWS credentials to use AWS services, and should be segregated on its own AWS account. 
 
-Each client should have its own AWS account. Clients are listed and referenced in the CT Stack main configuration file.
+Client applications should use their own AWS account and should not share the same account as the CPE stack. This is the recommended setup in production, but you're free to run everything on the same account.
 
-<b>Note:</b> You can have the stack and the clients running on the same AWS account. It's not recommended in production for clarity and security purposes. 
+### Implementation
+
+The CPE stack is composed of three components:
+
+   - **Decider:** The Decider is a daemon that connects to SWF and follow the progress of your workflows. It makes the decisions on what the "next step" is in your workflows based on the Execution Plan you have created. Details about the Decider and Plan definition are detailed in the [Decider section](/struct/decider.html).
+   - **ActivityPoller:** The ActivityPoller is the worker that gets the processing done. You can have many of them. They will execute the type of tasks they're meant to execute. Each of them are listening to an Activity TaskList (See SWF documentation). They use custom code that you will implement yourself to process the tasks you want. Each ActivityPoller process one tasks at a time.
+   - **InputPoller:** The InputPoller listens to your client application input SQS queue. When a client app sends a commend to CPE through SQS, the InputPoller get that message and perform the proper action, start a new workflow for example.
+
 
 ### Communication: SQS & JSON
 
-Clients and Stack communicate through SQS using JSON messages.
+Client app and CPE communicate through SQS using JSON messages.
 
 Each client is assigned two SQS queues:
 
-   - input queue: Used by the client to send orders to the stack. The stack listen to it.
-   - output queue: Used by the stack to send message back to the clients. The clients listen to their respective 'output' queue.
+   - **input queue:** Used by the client to send commands to the stack. The InputPoller listens to it.
+   - **output queue:** Used by the stack to send messages back to the client app. The client apps listen to their respective 'output' queue.
 
-Entitlements are set on the Queues such as the client can read from the 'output' queue and write to the 'input' queue. The oposite entitlements are set for the stack.
-
-### Storage: S3
-
-File storage is done on AWS S3.
-
-Each client must configure two S3 buckets:
-
-   - input bucket: Contains the input files to be transcoded. The stack must be entitled by the client to read from it.
-   - output bucket: Receive transcoded files from the Stack. The Stack must be entitled by the client to write in it.
-
-### Usage
-
-The stack is packaged in a Docker container for easy deployment.
-
-Any applications (Clients) can use it as long as your application can send JSON messages to the SQS service.
-
-#### SDK
-
-To make it easier, we have create a SDK that interact with SQS for you.
-
-Visit the SDK documentation here: <a href="http://sportarchive.github.io/CloudTranscode-SDK/" target="_blank">http://sportarchive.github.io/CloudTranscode-SDK/</a>
-
-The first implementation of this SDK is in PHP: https://github.com/sportarchive/CloudTranscode-PHP-SDK
+You are responsible for managing your SQS queues. Using the AWS console, create the proper queues and entitle the proper AWS accounts to read and write.
 
 <br>
 

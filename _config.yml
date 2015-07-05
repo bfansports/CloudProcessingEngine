@@ -1,6 +1,6 @@
 # Site title and subtitle. This is used in _includes/header.html
-title: 'Cloud Transcode'
-subtitle: 'Open source transcoding stack.'
+title: 'Cloud Processing Engine (CPE)'
+subtitle: 'Process at scale'
 
 # if you wish to integrate disqus on pages set your shortname here
 disqus_shortname: 'sportarchive'
@@ -15,7 +15,7 @@ google_analytics_id: ''
 navigation: 2
 
 # URL to source code, used in _includes/footer.html
-codeurl: 'https://github.com/sportarchive/CloudTranscode'
+codeurl: 'https://github.com/sportarchive/CloudProcessingEngine'
 
 # Default categories (in order) to appear in the navigation
 sections: [
@@ -26,7 +26,7 @@ sections: [
 
 # Keep as an empty string if served up at the root. If served up at a specific
 # path (e.g. on GitHub pages) leave off the trailing slash, e.g. /my-project
-baseurl: '/CloudTranscode'
+baseurl: '/CPE'
 
 # Dates are not included in permalinks
 permalink: none
