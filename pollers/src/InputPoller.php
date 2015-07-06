@@ -202,7 +202,7 @@ class InputPoller
                 self::INVALID_JSON);
         
         if (!isset($message->{'data'}->{'workflow'}))
-            throw new CpeSdk\Cpexception("Input doesn't contain any workflow information. You must provide the workflow you want to sent this job to!",
+            throw new CpeSdk\CpeException("Input doesn't contain any workflow information. You must provide the workflow you want to send this job to!",
                 self::INVALID_JSON);
     }
 }
