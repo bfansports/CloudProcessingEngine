@@ -1,3 +1,3 @@
 Cloud Transcode Jekyll documentation
 
-See for more details: http://bruth.github.io/jekyll-docs-template/
+See for more details: https://github.com/bruth/jekyll-docs-template
