@@ -268,7 +268,7 @@ function check_input_parameters($defaultConfigFile)
 
 // Get config file
 $defaultConfigFile =
-    realpath(dirname(__FILE__)) . "/../config/cloudTranscodeConfig.json";
+    realpath(dirname(__FILE__)) . "/../config/cpeConfig.json";
 $config = check_input_parameters($defaultConfigFile);
 $cpeLogger->log_out("INFO", basename(__FILE__), $config->{'clients'});
 

@@ -8,3 +8,6 @@ before_script:
   - cd pollers
   - composer self-update --quiet
   - composer install -n --prefer-source --dev
+
+script:
+  - phpunit pollers
