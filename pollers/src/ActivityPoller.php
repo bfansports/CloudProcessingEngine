@@ -219,10 +219,10 @@ $cpeLogger;
 // Usage
 function usage($defaultConfigFile)
 {
-    echo("Usage: php ". basename(__FILE__) . " -D <domain> -T <task_list> -A <activity_name> -V <activity_version> [-h] [-d] [-c <path to JSON config file>]\n");
+    echo("Usage: php ". basename(__FILE__) . " -D <domain> -T <task_list> -A <activity_name> -V <activity_version> [-h] [-d] [-c <config_file path>]\n");
     echo("-h: Print this help\n");
     echo("-d: Debug mode\n");
-    echo("-c <file path>: Optional parameter to override the default configuration file: '$defaultConfigFile'.\n");
+    echo("-c <config_file path>: Optional parameter to override the default configuration file: '$defaultConfigFile'.\n");
     echo("-D <domain>: SWF domain your Workflow runs on.\n");
     echo("-T <task list>: Specify the Activity Task List this activity will listen to. An Activity Task list is the queue your Activity poller will listen to for new tasks.\n");
     echo("-A <activity name>: Activity name this Poller can process.\n");
