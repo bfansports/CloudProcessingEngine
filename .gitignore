@@ -1,5 +1,5 @@
 # Ignore the local config
-pollers/config/cloudTranscodeConfig.json
+pollers/config/cpeConfig.json
 client_example/clientConfig.json
 
 # Vagrant
