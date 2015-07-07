@@ -215,25 +215,26 @@ class InputPoller
 $debug = false;
 $cpeLogger = new CpeSdk\CpeLogger();
 
-function usage()
+function usage($defaultConfigFile)
 {
-    echo("Usage: php ". basename(__FILE__) . " [-h] -c <config_path>\n");
+    echo("Usage: php ". basename(__FILE__) . " [-h] [-d] -c <config_file path>\n");
     echo("-h: Print this help\n");
-    echo("-c <config_path>: Path to the config file.\n");
+    echo("-d: Debug mode\n");
+    echo("-c <config_file path>: Optional parameter to override the default configuration file: '$defaultConfigFile'.\n");
     exit(0);
 }
 
-function check_input_parameters()
+function check_input_parameters($defaultConfigFile)
 {
     global $debug;
     global $cpeLogger;
     
     // Handle input parameters
     if (!($options = getopt("c:hd")))
-        usage();
+        usage($defaultConfigFile);
     
     if (isset($options['h']))
-        usage();
+        usage($defaultConfigFile);
     
     if (isset($options['d']))
         $debug = true;
@@ -245,10 +246,10 @@ function check_input_parameters()
             basename(__FILE__), 
             "Config file: '" . $options['c'] . "'"
         );
-        $configFile = $options['c'];
+        $defaultConfigFile = $options['c'];
     }
     
-    if (!($config = json_decode(file_get_contents($configFile))))
+    if (!($config = json_decode(file_get_contents($defaultConfigFile))))
     {
         $cpeLogger->log_out(
             "FATAL", 
@@ -266,7 +267,9 @@ function check_input_parameters()
 }
 
 // Get config file
-$config = check_input_parameters();
+$defaultConfigFile =
+    realpath(dirname(__FILE__)) . "/../config/cloudTranscodeConfig.json";
+$config = check_input_parameters($defaultConfigFile);
 $cpeLogger->log_out("INFO", basename(__FILE__), $config->{'clients'});
 
 // Create InputPoller object
