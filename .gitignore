@@ -13,3 +13,4 @@ composer.lock
 
 # Ignore any build output
 build/*
+_site
