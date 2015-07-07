@@ -1,0 +1,1 @@
+../_posts/2015-07-06-custom-activities.md

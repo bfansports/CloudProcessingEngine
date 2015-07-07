@@ -1,6 +1,6 @@
 # Site title and subtitle. This is used in _includes/header.html
 title: 'Cloud Processing Engine (CPE)'
-subtitle: 'Process at scale'
+subtitle: 'Tasks execution at scale'
 
 # if you wish to integrate disqus on pages set your shortname here
 disqus_shortname: 'sportarchive'
@@ -19,9 +19,11 @@ codeurl: 'https://github.com/sportarchive/CloudProcessingEngine'
 
 # Default categories (in order) to appear in the navigation
 sections: [
-    ['start', 'Get Started'],
-    ['struct', 'Structure'],
-    ['deep', 'Deep dive'],
+    ['start',  'Get Started'],
+    ['config', 'Configs'],
+    ['comp',   'Components'],
+    ['activ',  'Activities'],
+    ['extra',  'Extra'],
 ]
 
 # Keep as an empty string if served up at the root. If served up at a specific

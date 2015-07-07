@@ -1,37 +1,29 @@
 ---
 layout: page
 title: "Config files"
-category: deep
+category: config
 date: 2015-05-05 23:43:56
 order: 1
 ---
 
-All configuration files are location in the 'config' folder:
-https://github.com/sportarchive/CloudTranscode/blob/master/config/
+The CPE project is composed of a Decider and two Pollers.
+
+   - The Decider uses a Plan.yaml as configuration file.
+   - The Pollers (InputPoller and ActivityPoller) use a JSON configuration file located in `CloudProcessingEngine/pollers/config/`
 
 ### cloudTranscodeConfig.json
 
-You must rename cloudTranscodeConfigSample.json to cloudTranscodeConfig.json. The stack is expecting a file named 'cloudTranscodeConfig.json' but using the right command line parameter you can load any config file you want.
+In `CloudProcessingEngine/pollers/config/` you will find a configuration file example: `cloudTranscodeConfigSample.json`. Rename it to `cloudTranscodeConfig.json`. The Pollers are expecting a file named 'cloudTranscodeConfig.json' by default. However using the `-c <config_file path>` command line parameter you can load any config file you want.
 
-This config file contains Cloud Transcode main configuration information. You must customize this file for your need.
+### Config details
 
-cloudTranscodeConfig.json is devided in three sections:
+You must customize the config file for your need:
 
-   - aws: Can contain your AWS Region, Key and Secret. This can be left empty if you use environment variables or Ec2 Roles. See: http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html
-   - cloudTranscode: contains all core configuration information:<br>
-     You MUST at least edit: "cloudTranscode"->"workflow"->
-     
-        - "domain": Name of the domain to create/use
-        - "name": Name of the workflow to create/use
-        - "description": Name of the workflow to create/use
-        - "decisionTaskList": Name of the taskList (task queue) to use
+   - Edit the SQS listed to use your the SQS queues you created for your client application
+   - List the Activities your ActivityPoller can use and where the code reside.
 
-   - clients: List all the clients that can use the stack. They will all have their own SQS queues for communication: <br>
-     You MUST at least edit the client "name" and: "clients"->"queues"->
-     
-        - "input": URL of the input SQS queue
-        - "output" : URL of the output SQS queue
+The `cloudTranscodeConfigSample.json` template uses the Cloud Transcode activities as example. We list them and reference the PHP code implementing the Activity logic.
 
-You can obviously edit everything else if you want to. The timeout values for each activities can be tweaked at will.
+See the Cloud Transcode project to see how the activities are implemented: https://github.com/sportarchive/CloudTranscode
 
-For more information see [SQS](http://aws.amazon.com/swf/)
+

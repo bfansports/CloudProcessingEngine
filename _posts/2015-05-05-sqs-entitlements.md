@@ -1,12 +1,12 @@
 ---
 layout: page
 title: "SQS Entitlements"
-category: deep
+category: extra
 date: 2015-05-05 23:29:21
 order: 20
 ---
 
-SQS is used by Cloud Transcode to receive commands and send out updates about jobs and activities. Clients who want to use Cloud Transcode will need to have dedicated communication channels for both input and output.
+SQS is used by CPE to receive commands and send out updates about jobs and activities. Clients who want to use CPE will need to have dedicated communication channels for both input and output.
 
 The owner of the stack MUST provision those SQS queues and entitle the clients correctly.
 
