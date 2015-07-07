@@ -215,7 +215,7 @@ class InputPoller
 $debug = false;
 $cpeLogger = new CpeSdk\CpeLogger();
 
-function usage($defaultConfigFile)
+function usage()
 {
     echo("Usage: php ". basename(__FILE__) . " [-h] -c <config_path>\n");
     echo("-h: Print this help\n");
