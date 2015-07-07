@@ -19,7 +19,7 @@ The Stack Admin need to configure two communication channels per client:
    - input: The client sends its commands through it and the stack listens to it
    - output: The stack sends updates and info about jobs and errors and the client listens to it.
 
-The channels are created and owned by the AWS account and user running the CT Stack. So you must entitle your clients to send and receive messages to and from the Stack SQS channels.
+The channels are created and owned by the AWS account and user running the CPE Stack. So you must entitle your clients to send and receive messages to and from the Stack SQS channels.
 
 First, in SQS, create two channels using the AWS web console:
 
