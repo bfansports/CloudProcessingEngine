@@ -50,10 +50,11 @@ class ActivityPoller
     private $activityName;
     private $activityVersion;
     private $activityHandler;
+    private $knownActivities;
     
     const ACTIVITY_FAILED = "ACTIVITY_FAILED";
   
-    function __construct($config)
+    public function __construct($config)
     {
         global $debug;
         global $cpeLogger;
@@ -131,7 +132,8 @@ class ActivityPoller
             
             return false;
         }
-
+        
+        $result = null;
         $reason = 0;
         $details = 0;
         try {

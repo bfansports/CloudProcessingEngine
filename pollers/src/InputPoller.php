@@ -44,10 +44,11 @@ class InputPoller
     private $cpeSqsListener;
     private $cpeSwfHandler;
     private $cpeLogger;
+    private $typeMap;
     
     const INVALID_JSON = "INVALID_JSON"; 
     
-    function __construct($config)
+    public function __construct($config)
     {
         global $debug;
         global $cpeLogger;
@@ -83,6 +84,8 @@ class InputPoller
         // We poll from queues
         foreach ($this->config->{'clients'} as $client)
         {
+            $msg = null;
+            
             // Long Polling messages from client input queue
             $queue = $client->{'queues'}->{'input'};
             try {
