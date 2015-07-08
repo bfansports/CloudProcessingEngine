@@ -10,9 +10,9 @@ CPE allows you to run workflows and distribute processing accross many machines 
 You can process things at scale. Any tasks that takes an input and do some processing is eligible for CPE.
 
 To use CPE, you need to deploy the CPE stack which is composed of three components:
-   - Decider: Listens to Amazon SWF and make decision on "what's next" in your workflow.
-   - InputPoller: Listens to Amazon SQS for commands from your client applications. Your client apps can start new workflows by sending a `start_job` command along with some JSON payload.
-   - ActivityPoller: Listens to SWF for incoming tasks. One ActivityPoller is a worker so you can have many running. They all listen on a particular queue (TaskList) and process task SWF assign to them.
+   - **Decider:** Listens to Amazon SWF and make decision on "what's next" in your workflow.
+   - **InputPoller:** Listens to Amazon SQS for commands from your client applications. Your client apps can start new workflows by sending a `start_job` command along with some JSON payload.
+   - **ActivityPoller:** Listens to SWF for incoming tasks. One ActivityPoller is a worker so you can have many running. They all listen on a particular queue (TaskList) and process task SWF assign to them.
 
 The ActivityPoller execute Activities that you develop. You can create Activities for any type of processes your workflow requires. So you can have several types of workers handling different type of activities in your workflow.
 
