@@ -138,9 +138,9 @@ class ActivityPoller
             // Check activity task
             $this->activityHandler->do_task_check($activityTask);
             // Perform input validation
-            $this->activityHandler->do_input_validation($activityTask);
+            $this->activityHandler->do_input_validation();
             // Initialize Activity
-            $this->activityHandler->do_init($activityTask);
+            $this->activityHandler->do_init();
             // Run activity task
             $result = $this->activityHandler->do_activity($activityTask);
         } catch (CpeSdk\CpeException $e) {
