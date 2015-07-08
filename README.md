@@ -3,28 +3,35 @@
 
 # What is the Cloud Processing Engine (CPE) ?
 
-CPE allows you to distribute and scale processing accross many machines located anywhere (any cloud provider or local). If you have processes that need to scale, then CPE is for you. 
+CPE allows you to run workflows and distribute processing accross many machines located anywhere (any cloud provider or local). If you have processes that need to scale, then CPE is for you. 
 
 # What can I do with CPE?
 
 You can process things at scale. Any tasks that takes an input and do some processing is eligible for CPE.
 
-Do use CPE, you first need to deploy the CPE stack. Then you can create your Activities (workers) that will handle the processing for your workflow. You can have several types of workers handling different activities in your workflow.
+To use CPE, you need to deploy the CPE stack which is composed of three components:
+   - Decider: Listens to Amazon SWF and make decision on "what's next" in your workflow.
+   - InputPoller: Listens to Amazon SQS for commands from your client applications. Your client apps can start new workflows by sending a `start_job` command along with some JSON payload.
+   - ActivityPoller: Listens to SWF for incoming tasks. One ActivityPoller is a worker so you can have many running. They all listen on a particular queue (TaskList) and process task SWF assign to them.
+
+The ActivityPoller execute Activities that you develop. You can create Activities for any type of processes your workflow requires. So you can have several types of workers handling different type of activities in your workflow.
+
+Workflows are arbitrary and are defined using a YAML plan that you can write. The plan defines your workflow steps and which activity process each step. Input and Output data can be passed on from an activity to another.
 
 ## Example
 
-Transcoding media files (videos, audio, documents, etc) requires processing power on demand and must scale if a lot of transcoding is required. This need gave birth to CPE.
+Transcoding media files (videos, audio, documents, etc) requires processing power on demand and must scale if a lot of transcoding is required. This business requirement gave birth to CPE.
 
-The Cloud Transcode (CT) project implements the transcoding activities (workers) that used by CPE to transcode files to different formats. CT workers download files from AWS S3, transcode them and push them back to S3.
+The Cloud Transcode (CT) project implements the activities (workers) in charge of transcoding media files. The CPE ActivityPoller loads those activities and use them to process incoming tasks. CT activities download the media files from AWS S3, transcode them and push them back to S3.
 
-See the Cloud Transcode documentation for more information: https://github.com/sportarchive/CloudTranscode
+See the Cloud Transcode documentation for a working example and more information: https://github.com/sportarchive/CloudTranscode
 
 # Documentation
 
-Read the CPE documentation for more information about CPE and how to:
-- Create your workflow
+Read the detailed CPE documentation for more information about CPE and how to:
+- Create your workflow and define your YAML plan
 - Create and use your own activities
-- Run the stack locally using Vagrant and Docker
+- Run the stack natively or using Docker
 - Run the stack at scale in the Cloud
 
 See: http://sportarchive.github.io/CloudProcessingEngine/
