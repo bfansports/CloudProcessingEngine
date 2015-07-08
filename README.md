@@ -16,13 +16,13 @@ To use CPE, you need to deploy the CPE stack which is composed of three componen
 
 The ActivityPoller execute Activities that you develop. You can create Activities for any type of processes your workflow requires. So you can have several types of workers handling different type of activities in your workflow.
 
-Workflows are arbitrary and are defined using a YAML plan that you can write. The plan defines your workflow steps and which activity process each step. Input and Output data can be passed on from an activity to another.
+Workflows are arbitrary and are defined using a YAML plan that you must write yourself. The plan defines your workflow steps and which activity execute each step. Input and Output data can be passed on from one activity to another.
 
 ## Example
 
-Transcoding media files (videos, audio, documents, etc) requires processing power on demand and must scale if a lot of transcoding is required. This business requirement gave birth to CPE.
+Transcoding media files (videos, audio, documents, etc) requires processing power on demand that must scale up if a lot of transcoding is required. This business requirement gave birth to CPE.
 
-The Cloud Transcode (CT) project implements the activities (workers) in charge of transcoding media files. The CPE ActivityPoller loads those activities and use them to process incoming tasks. CT activities download the media files from AWS S3, transcode them and push them back to S3.
+The Cloud Transcode (CT) project implements the activities (workers) in charge of transcoding media files. The ActivityPoller loads those activities and use them to process incoming transcoding tasks. CT activities download the media files from AWS S3, transcode them and push them back to S3.
 
 See the Cloud Transcode documentation for a working example and more information: https://github.com/sportarchive/CloudTranscode
 
