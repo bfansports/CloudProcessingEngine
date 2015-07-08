@@ -44,7 +44,7 @@ class InputPoller
     private $cpeSqsListener;
     private $cpeSwfHandler;
     private $cpeLogger;
-    private $typeMap;
+    private $typesMap;
     
     const INVALID_JSON = "INVALID_JSON"; 
     
