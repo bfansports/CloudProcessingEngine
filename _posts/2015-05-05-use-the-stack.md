@@ -8,34 +8,35 @@ order: 5
 
 You now have a running stack! Nice. But unless you can send jobs to it, it's useless.
 
-In order to send jobs to the Stack you must send a 'start_job' order through your SQS input queue. To receive updates from the stack, you must also poll you SQS output queue for incoming messages.
+In order to send jobs to the Stack your clients app must send a `start_job` order through its SQS input queue. To receive updates from the stack, your app must also poll its SQS output queue for incoming messages.
 
-The stack and the client apps send and receive JSON messages though SQS:
+The stack and client apps send and receive JSON messages though SQS:
 
-   - The clients send JSON commands to the 'input' SQS queue. The stack reads from the `input` queue. (InputPoller)
-   - The Stack sends JSON messages to the 'output' SQS queue. The clients read the `output` SQS queue.
+   - The client apps send JSON commands to the `input` SQS queue. The stack reads from the `input` queue. (InputPoller)
+   - The Stack sends JSON messages to the client apps`output` SQS queues. The clients read the `output` SQS queue.
 
 All messages have a defined JSON format that must be respected.
 
-A Client SDK has been implemented in PHP to send properly formatted JSON messages. It can be implemented in any languages. The specifications are here: http://sportarchive.github.io/CloudProcessingEngine-Client-SDK/
+A CPE Client SDK has been implemented in PHP for you application to send properly formatted JSON messages. It can be implemented in any languages though (feel free to contribute).
+
+The Client SDK code is here: https://github.com/sportarchive/CloudProcessingEngine-Client-SDK-PHP<br>
+The Documentation is here: http://sportarchive.github.io/CloudProcessingEngine-Client-SDK-PHP/
 
 ### Client example
 
-An example of client implementation using this SDK is available in the `client_example` folder.
+An example of client implementation using this SDK is available in the `client_example` folder of the CPE project.
 
-First you need to install the PHP dependencies these programs need. Run:
+First you need PHP (obviously) and you must install the PHP dependencies this client example needs. To get the dependencies Run:
 
     $> make
 
 This will install composer and will install the dependencies in the `vendor` folder.
 
-Then, copy the configuration file sample `clientConfigSample.json` to `clientConfig.json` and edit it. Replace the SQS queues by your own SQS queues that you configured.
+Then, copy the configuration file sample `clientConfigSample.json` to `clientConfig.json` and edit it. Replace the SQS queues by the SQS queues that you configured.
 
 #### ClientPoller.php
 
 This program polls SQS for new messages coming from the stack.
-
-*Note: You need PHP installed on your machine to run this test.*
 
 ```
 Usage: php ClientPoller.php -c configFile [-h] [-k <key>] [-s <secret>] [-r <region>]
@@ -49,21 +50,20 @@ Usage: php ClientPoller.php -c configFile [-h] [-k <key>] [-s <secret>] [-r <reg
 
 Run it as follow:
 
-    php ClientPoller.php -c clientConfig.json
+    php ClientPoller.php -c clientConfig.json -d
 
 It should start polling your output SQS queue for incoming messages.
 
 #### ClientCommander.php
 
-This program can start a new job. It is interactive and will ask you to submit a JSON payload to send to your new workflow.
+This program sends commands to the stack. It can start a new job. It is interactive and will ask you to submit a JSON payload to send to your workflow as input data.
 
-Couple JSON input payload are available in the `input_samples` folder. You MUST edit them to reference your own files.
+Couple JSON files are available in the `input_samples` folder. It is the JSON paylod we will send to our workflow. You MUST edit them to reference your own file in S3. In fact Cloud Transcode activities are transcoding files located in AWS S3. 
 
-The format of these files is proper to the Cloud Transcode activities. If you create your own activities, you will define your payload format.
+The format of these files is proper to the Cloud Transcode activities. If you create your own activities, you will define your own payload format.
 
-For Cloud Transcode, you must specify an input file (bucket and key) and output (bucket and key). So for the purpose of this test, create two buckets in S3, one for input and the other for output. Then upload a video file to the input bucket.
+For Cloud Transcode, you must specify an input file (bucket and key) and output (bucket and key). So for the purpose of this test, create two buckets in S3, one for input and the other for output. Then upload a video file to the input bucket and reference it in the JSON files.
 
-Once done, edit the input JSON files.
 
 ```
 Usage: php ClientCommander.php -c configFile [-h] [-k <key>] [-s <secret>] [-r <region>]
@@ -83,11 +83,11 @@ start_job <filepath>: Start a new job. Pass a JSON file containing the instructi
 Run it as follow:
 
     php ClientCommander.php -c clientConfig.json
-    Command [enter]: start_job input_samples/input_thumbs1.json
+    Command [enter]: start_job input_samples/input_video.json
 
 The script will take the content of your JSON file and will send it to your stack using your SQS input queue.
 
-Now monitor your stack logs, you should things happening. Monitor also your ClientPoller as the stack will be sending messages back.
+Now monitor your stack logs, you should things happening. Monitor also your ClientPoller client app as the stack will be sending messages back it.
 
 ### Check the result
 

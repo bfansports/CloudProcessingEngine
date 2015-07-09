@@ -6,25 +6,15 @@ date: 2015-05-05 20:13:46
 order: 3
 ---
 
-Now you need to install the stack and configure it so the test client can use it.
+Now you need to install the stack and configure it so our client app can use it.
 
 ### Requirements
 
-<b>You need a 64bits machine if you want to run the DEV environment.</b> If you have a 32bits it will not work. We use Docker and it requires a 64bits machine.
+We will run the stack locally using Docker. So get Docker installed on your machine: https://docs.docker.com/installation/
 
-You can still run the stack without Docker if you want, in this case, you'll have to dig little deeper. *It's only three daemons to start, it's not very hard.*
+<b>You MUST use a 64bits machine if you want to use Docker.</b> If you have a 32bits Docker will **NOT** work. 
 
-We will run the stack locally in a Virtual Machine.
-We are using VirtualBox in this example, but VMWare works as well. 
-
-We are using Vagrant to start the VM and to configure it correctly for you.
-
-#### VirtualBox and Vagrant
-
-Install both applications on your local computer.
-
-   - [Install VirtualBox](https://www.virtualbox.org/wiki/Downloads) 
-   - [Install Vagrant](http://www.vagrantup.com/downloads) 
+You can still run the stack without Docker if you want, in this case, you'll have to install the dependencies yourself on your machines.
 
 ### Install the stack
 
@@ -41,21 +31,40 @@ Check if the "decider" folder contains the proper code. You can make sure it is 
     $> cd decider
     $> git pull origin master
 
-### Configure
+#### Without Docker
 
-FIXME TYLER
+For installing the stack without Docker, you need:
 
-#### Install activities
+   - PHP >= 5.5 and Python 2
+   - Both pollers are in PHP (ActivityPoller.php and InputPoller.php) and use composer for dependency management. So go in the `pollers` folder and run `make`. This will install composer and the dependencies.
+   - The Decider is in Python. SO go in the `decider` folder and run `./setup.py install`.
 
-The stack needs activities so it can process stuffs. In your config file, you need to make reference to each activity PHP file. Each activity is in charge of a specific task in your workflow.
+Then start each binary by hand. 
+
+### Install activities
+
+The ActivityPoller (worker) needs activities so it has some logic to execute stuffs. In your config file, you will make reference to each activity code file. Each activity is in charge of a specific task in your workflow so you can have as many as you want.
 
 For the purpose of this example we will use the Cloud Transcode activities. Head to the Cloud Transcode project on Github: https://github.com/sportarchive/CloudTranscode
 
-Clone it locally somewhere:
+Clone the project locally somewhere:
 
     $> git clone https://github.com/sportarchive/CloudTranscode.git
 
-Then edit your configuration file and add couple activities:
+> You will now create your configuration file to reference the activity files located in the CT project in `src/activities/`.
+
+### Configure
+
+> Back in the CPE project.
+
+One configuration file is needed for the pollers. A default config file named `cpeConfigTemplate.json` is located in `pollers/config` folder. Rename this file `cpeConfig.json` and open it in an editor.
+
+There you must configure:
+
+   - Your client app SQS queue that you must have created. 
+   - The list of activities your Workflow is going to handle and where their code is located.
+
+The config file looks as follow:
 
 ```json
 {
@@ -72,7 +81,7 @@ Then edit your configuration file and add couple activities:
         {
             "name": "ValidateInputAndAsset",
             "version": "v1",
-            "description": "Check input command and asset to be transcoded.",
+            "description": "Check input command and asset to be transcoded. FFProbe the input file.",
             "file": "[PATH TO CT PROJECT AND FILE]/ValidateInputAndAssetActivity.php",
             "class": "ValidateInputAndAssetActivity",
         },
@@ -87,25 +96,27 @@ Then edit your configuration file and add couple activities:
 }
 ```
 
-Now CPE knows two types of activity workers and where the code is:
+**Cloud Transcode declares two types of activity workers:**
 
    - ValidateInputAndAsset
    - TranscodeAsset
 
-We can now create a workflow plan that will use those two activities to transcode files.
+Make sure you put the correct path to `ValidateInputAndAssetActivity.php` and `TranscodeAssetActivity.php`.
 
-#### Create a Plan
+> We can now create a Decider YAML Plan to create a workflow that will use those two activities to transcode files.
+
+### Create a Plan
 
 The decider expects a plan so it can make its decisions. A plan describe your workflow. It is a YAML file that describes your workflow steps and the activities that will be used to process them.
 
-We will create a simple plan containing two steps:
+**We will create a simple plan containing two steps:**
 
    - **Step 1:** Validate and probe an input video
    - **Step 2:** Transcode the input video into a new video
     
-This plan has been created for you so you can get started. Open `plans/ct_plan.yml` and take a look at the plan YAML syntax.
+This plan has been created for you so you can get started quickly. In the `decider` folder, open `plans/ct_plan.yml` and take a look at the plan YAML syntax.
 
-For more information about the syntax and what you can do with your workflow, **head to the Decider documentation here:** http://sportarchive.github.io/CloudProcessingEngine-Decider
+For more information about the syntax and what you can do with your workflows, **head to the Decider documentation here:** http://sportarchive.github.io/CloudProcessingEngine-Decider
 
 *The input data describing where the input video file is and which output video format we need, will be crafted in JSON and submitted to the workflow as input. Then the workflow will pass along this input to our Activity workers. The workers will read this input and will perform the transcoding we want.*
 

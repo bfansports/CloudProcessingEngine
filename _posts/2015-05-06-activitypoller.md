@@ -6,29 +6,25 @@ date: 2015-05-06 17:50:14
 order: 200
 ---
 
-The ActivityPoller is a SWF Activity worker. It is a daemon that listens to a SWF TaskList and then execute incoming tasks (See SWF Activities documentation).
+The ActivityPoller is a SWF Activity worker. It is a daemon that listens to a SWF TaskList and execute incoming tasks (See SWF Activities documentation). There can be N ActivityPoller daemons running. They all listen to a TaskList. 
 
-There can be N ActivityPoller daemons running. They all listen to a TaskList.
-
-Each TaskList will forward a specific type of tasks to the ActivityPoller listening to it. So you will have as many TaskLists as there are type of Activities in your workflow.
-
-SWF ensures that a task will be executed by only one Activity Worker and only once.
+Each TaskList will forward a specific type of tasks to the ActivityPoller listening to it. So you will have as many TaskLists as there are type of Activities in your workflow. SWF ensures that a task will be executed by only one Activity Worker and only once.
 
 ### Activities
 
 The ActivityPoller is just a daemon listening to SWF for incoming tasks. It doesn't contain any logic.
 
-In you configuration file, you will list the different activities your install supports and the path to their PHP code. You will then start the ActivityPoller and from the command line you will tell it to load a specific activity logic. It will dynamically load the activity code you specified in the config file and will use it to process your task.
+In your poller configuration file, you will list the different activities your stack supports and the path to their PHP code. You will then start the ActivityPoller and from the command line you will tell it to load a specific activity logic. It will dynamically load the activity code you specified in the config file and will use it to process your task.
 
-The logic code is started by the ActivityPoller when a new task that can be handled is received. The ActivityPoller will instanciate the Activity class and will execute the 'do_activity' method.
+The logic code is loaded by the ActivityPoller when a new task that can be handled is received. The ActivityPoller will instanciate the Activity class and will execute the 'do_activity' method.
 
 ### Dependencies
 
 Before starting the ActivityPoller, you must install the PHP dependencies using composer:
 
 ```
-$> cd CloudProcessingEngine/pollers
-$> make
+    $> cd CloudProcessingEngine/pollers
+    $> make
 ```
 
 This will install the dependencies in the `vendor` folder.
@@ -51,14 +47,14 @@ Usage: php ActivityPoller.php -D <domain> -T <task_list> -A <activity_name> -V <
 
 ### Run it
 
-The following command will start the ActivityPoller daemon. It will listen to the `SADomain` `sa_transcode` Activity TaskList, and will run the `TranscodeActivity` Activity version `v2`.
+The following command will start the ActivityPoller daemon. It will listen to the `sa_transcode` Activity TaskList for the `SADomain` SWF domain, and will execute the `TranscodeActivity` Activity version `v2`.
 
 ```
 $> php ActivityPoller.php -D SADomain -T sa_transcode -A TranscodeActivity -V v2 -d &
 
 ```
 
-The `TranscodeActivity` activity is listed in the configuration file. See the [Config File](config-files.html) section for more info.
+The `TranscodeActivity` activity is listed in the poller configuration file. See the [Config File](config-files.html) section for more info.
 
 By default the daemons will log its output in `/var/tmp/logs/cpe/`.
 

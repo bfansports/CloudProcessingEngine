@@ -8,27 +8,27 @@ order: 20
 
 SQS is used by CPE to receive commands and send out updates about jobs and activities. Clients who want to use CPE will need to have dedicated communication channels for both input and output.
 
-The owner of the stack MUST provision those SQS queues and entitle the clients correctly.
+The owner of the stack MUST provision those SQS queues and entitle the clients correctly supposing they are running using credentials of another AWS account.
 
-<b>Note:</b> If you run the clients with the same credentials as the SQS queues owner, then you don't need entitlements. The owner can by default access the queues.
+> If you run the clients with the same credentials as the SQS queues owner, then you may not need entitlements. 
 
 ### Setting up SQS channels
 
 The Stack Admin need to configure two communication channels per client:
 
-   - input: The client sends its commands through it and the stack listens to it
-   - output: The stack sends updates and info about jobs and errors and the client listens to it.
+   - **input:** The client sends its commands through it and the stack listens to it
+   - **output:** The stack sends updates and info about jobs and errors and the client listens to it.
 
 The channels are created and owned by the AWS account and user running the CPE Stack. So you must entitle your clients to send and receive messages to and from the Stack SQS channels.
 
 First, in SQS, create two channels using the AWS web console:
 
-   - input: Channel for input communication with your client "A". Let's name it "CT_ClientA_input".
-   - output: Channel for output communication with your client "A". Let's name it "CT_ClientA_output".
+   - **input:** Channel for input communication with your client "A". Let's name it "CT_ClientA_input".
+   - **output:** Channel for output communication with your client "A". Let's name it "CT_ClientA_output".
 
 ### Permissions
 
-Once the channels are created you must entitle your client to listen to the output channel and send message to the input channel. In order to entitle your client you need the client's AWS account number.
+Once the queues are created you must entitle your client app to listen to the output channel and send message to the input channel. In order to entitle your client you need the client's AWS account number.
 
 Once you have this information, you can create permissions for your client AWS accounts.
 
