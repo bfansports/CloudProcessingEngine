@@ -5,9 +5,15 @@
 
 CPE allows you to run workflows and distribute processing accross many machines located anywhere (any cloud provider or local). If you have processes that need to scale, then CPE is for you. 
 
-# What can I do with CPE?
+# Technology
 
-You can process things at scale. Any tasks that takes an input and do some processing is eligible for CPE.
+CPE use the following AWS services to run your tasks at scale:
+- [SWF](http://aws.amazon.com/swf/): Workflow mangement. SWF allows you to create processing workflows so you can chain activities. Each activity is handled by a worker who will process a certain task using input data.
+- [SQS](http://aws.amazon.com/sqs/): Messaging and communication. Clients using the CPE stack can send commands to the stack using SQS to initiate a new workflow for example. They receive job updates, progress, and output results from SQS as well.
+
+Before getting started, you need a good understanding of those two services. Read the AWS documentation.
+
+# How to us it?
 
 To use CPE, you need to deploy the CPE stack which is composed of three components:
    - **Decider:** Listens to Amazon SWF and make decision on "what's next" in your workflow.
@@ -35,14 +41,6 @@ Read the detailed CPE documentation for more information about CPE and how to:
 - Run the stack at scale in the Cloud
 
 See: http://sportarchive.github.io/CloudProcessingEngine/
-
-# Technology
-
-CPE use the following AWS services:
-- [SWF](http://aws.amazon.com/swf/): Workflow mangement. SWF allows you to create processing workflows so you can chain activities. Each activity is handled by a worker who will process a certain task using input data.
-- [SQS](http://aws.amazon.com/sqs/): Messaging and communication. Clients using the CPE stack can send commands to the stack using SQS to initiate a new workflow for example. They receive job updates, progress, and output results from SQS as well.
-
-Before getting started, you need a good understanding of those two services. Read the AWS documentation.
 
 # High Level Architecture
 ![Alt text](/../images/high_level_arch.png?raw=true "High Level Architecture")
