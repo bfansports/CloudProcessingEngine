@@ -20,9 +20,9 @@ To use CPE, you need to deploy the CPE stack which is composed of three componen
    - **InputPoller:** Listens to Amazon SQS for commands from your client applications. Your client apps can start new workflows by sending a `start_job` command along with some JSON payload.
    - **ActivityPoller:** Listens to SWF for incoming tasks. One ActivityPoller is a worker so you can have many running. They all listen on a particular queue (TaskList) and process task SWF assign to them.
 
-The ActivityPoller execute Activities that you develop. You can create Activities for any type of processes your workflow requires. So you can have several types of workers handling different type of activities in your workflow.
+The ActivityPoller execute Activities that you develop. You must create an Activity for each type of task your workflow can handle. So you will have several types of workers handling different type of activities in your workflow. Each worker is a daemon that run on a box or in a Docker container.
 
-Workflows are arbitrary and are defined using a YAML plan that you must write yourself. The plan defines your workflow steps and which activity execute each step. Input and Output data can be passed on from one activity to another.
+Workflows are arbitrary and are defined using a YAML plan that you must write yourself. A plan defines your workflow steps and which activity executes each step. Input and Output data can be passed on from one activity to another.
 
 ## Example
 
