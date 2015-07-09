@@ -13,7 +13,7 @@ CPE use the following AWS services to run your tasks at scale:
 
 Before getting started, you need a good understanding of those two services. Read the AWS documentation.
 
-# How to us it?
+# How to use it?
 
 To use CPE, you need to deploy the CPE stack which is composed of three components:
    - **Decider:** Listens to Amazon SWF and make decision on "what's next" in your workflow.
