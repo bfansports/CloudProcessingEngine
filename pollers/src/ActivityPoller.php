@@ -79,7 +79,7 @@ class ActivityPoller
         
         // Check and load activities to handle
         if (!$this->register_activities())
-            throw new CpeSdk\CpeException("No activity class registered! Exiting ...");
+            die("No activity class registered! Check the logs (/var/tmp/logs/cpe/). Exiting ...\n");
     }
     
     // We poll for new activities
@@ -141,8 +141,6 @@ class ActivityPoller
             $this->activityHandler->do_task_check($activityTask);
             // Perform input validation
             $this->activityHandler->do_input_validation();
-            // Initialize Activity
-            $this->activityHandler->do_init();
             // Run activity task
             $result = $this->activityHandler->do_activity($activityTask);
         } catch (CpeSdk\CpeException $e) {
@@ -173,16 +171,25 @@ class ActivityPoller
     // Register and instantiate activities handlers classes
     private function register_activities()
     {
-        $this->cpeLogger->log_out("INFO", basename(__FILE__),
-            "Registering Activity: $this->activityName:$this->activityVersion");
-        
         foreach ($this->knownActivities as $knownActivity)
         {
             if ($this->activityName == $knownActivity->{"name"} &&
                 $this->activityVersion == $knownActivity->{"version"})
             {
                 $activityToHandle = $knownActivity;
+
+                if (!file_exists($activityToHandle->{"file"}))
+                {
+                    $this->cpeLogger->log_out("ERROR", basename(__FILE__),
+                        "The code file '".$activityToHandle->{"file"}."' for activity: name=" 
+                        . $activityToHandle->{"name"} . ",version=" 
+                        . $activityToHandle->{"version"}." doesn't exists! Check if the file is accessible and if the path is correct in your config file.");
+                    return false;
+                }
                 
+                $this->cpeLogger->log_out("INFO", basename(__FILE__),
+                    "Registering Activity: $this->activityName:$this->activityVersion");
+        
                 // Load the file implementing the activity
                 require_once $activityToHandle->{"file"};
                 
@@ -201,10 +208,16 @@ class ActivityPoller
                     "Activity handler registered: name=" 
                     . $activityToHandle->{"name"} . ",version=" 
                     . $activityToHandle->{"version"});
+
+                return true;
             }
         }
-                
-        return true;
+        
+        $this->cpeLogger->log_out("ERROR", basename(__FILE__),
+            "No Activity handler was found for: name=" 
+            . $this->activityName . ",version=" 
+            . $this->activityVersion.". Check your config file and ensure your 'activity' name AND 'version' is there.");    
+        return false;
     }
 }
 

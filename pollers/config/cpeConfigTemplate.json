@@ -10,11 +10,11 @@
     ],
     "activities": [
         {
-            "name": "ValidateInputAndAsset",
+            "name": "ValidateAsset",
             "version": "v1",
             "description": "Check input command and asset to be transcoded.",
-            "file": "/activities/ValidateInputAndAssetActivity.php",
-            "class": "ValidateInputAndAssetActivity",
+            "file": "/activities/ValidateAssetActivity.php",
+            "class": "ValidateAssetActivity",
         },
         {
             "name": "TranscodeAsset",

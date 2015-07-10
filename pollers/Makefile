@@ -1,7 +1,6 @@
 COMPOSER = ./composer.phar
 COMPOSER_CONF = ./composer.json
 
-.PRECIOUS: .env.%
 .PHONY: all 
 
 # Rules for building environment

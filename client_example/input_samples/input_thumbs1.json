@@ -1,13 +1,15 @@
 {
     "workflow": {
-        "name": "SATranscode",
+        "name": "Transcode",
         "version": "1.0",
-        "taskList": "sa_validate",
+        "taskList": "basic_transcode",
         "domain": "SADomain"
     },
-    "input_type": "VIDEO",
-    "input_bucket": "cloudtranscode-dev",
-    "input_file": "/input/test1.mp4",
+    "input": {
+	"input_type": "VIDEO",
+	"input_bucket": "cloudtranscode-dev",
+	"input_file": "/input/test1.mp4"
+    },
     "output": 
     {
 	"output_type": "THUMB",
