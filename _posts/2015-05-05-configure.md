@@ -31,16 +31,6 @@ Check if the "decider" folder contains the proper code. You can make sure it is 
     $> cd decider
     $> git pull origin master
 
-#### Without Docker
-
-For installing the stack without Docker, you need:
-
-   - PHP >= 5.5 and Python 2
-   - Both pollers are in PHP (ActivityPoller.php and InputPoller.php) and use composer for dependency management. So go in the `pollers` folder and run `make`. This will install composer and the dependencies.
-   - The Decider is in Python. SO go in the `decider` folder and run `./setup.py install`.
-
-Then start each binary by hand. 
-
 ### Install activities
 
 The ActivityPoller (worker) needs activities so it has some logic to execute stuffs. In your config file, you will make reference to each activity code file. Each activity is in charge of a specific task in your workflow so you can have as many as you want.
@@ -114,11 +104,11 @@ The decider expects a plan so it can make its decisions. A plan describe your wo
    - **Step 1:** Validate and probe an input video
    - **Step 2:** Transcode the input video into a new video
     
-This plan has been created for you so you can get started quickly. In the `decider` folder, open `plans/ct_plan.yml` and take a look at the plan YAML syntax.
+A plan has been created for you so you can get started quickly. In the `decider` folder, open `docs/examples/ct_plan.yml` and take a look at the plan YAML syntax.
 
 For more information about the syntax and what you can do with your workflows, **head to the Decider documentation here:** http://sportarchive.github.io/CloudProcessingEngine-Decider
 
-*The input data describing where the input video file is and which output video format we need, will be crafted in JSON and submitted to the workflow as input. Then the workflow will pass along this input to our Activity workers. The workers will read this input and will perform the transcoding we want.*
+*The input data describing the job to do (where the input video file is and which output video format we need), will be crafted in JSON and submitted to the workflow as input by our client app. Then the workflow will pass along this input to our Activity workers. The workers will read this input and will perform the transcoding we want.*
 
 <br>
 

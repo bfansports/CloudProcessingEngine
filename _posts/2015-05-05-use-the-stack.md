@@ -19,8 +19,8 @@ All messages have a defined JSON format that must be respected.
 
 A CPE Client SDK has been implemented in PHP for you application to send properly formatted JSON messages. It can be implemented in any languages though (feel free to contribute).
 
-The Client SDK code is here: https://github.com/sportarchive/CloudProcessingEngine-Client-SDK-PHP<br>
-The Documentation is here: http://sportarchive.github.io/CloudProcessingEngine-Client-SDK-PHP/
+**The Client SDK code is here:** https://github.com/sportarchive/CloudProcessingEngine-Client-SDK-PHP<br>
+**The Documentation is here:** http://sportarchive.github.io/CloudProcessingEngine-Client-SDK-PHP/
 
 ### Client example
 

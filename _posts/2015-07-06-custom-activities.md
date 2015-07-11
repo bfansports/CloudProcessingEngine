@@ -28,7 +28,6 @@ The SDK is the center piece that allows the integration of custom code into CPE.
 
    - do_task_check($activityTask);
    - do_input_validation($activityTask);
-   - do_init($activityTask);
    - do_activity($activityTask);
 
 To implement your activity easily, we've created the `CpeActivity` Class located in the SDK. This is a boilerplate and your activity must `extends` this class.
@@ -36,7 +35,6 @@ To implement your activity easily, we've created the `CpeActivity` Class located
 **The CpeActivity class already implement the following for you:**
 
    - do_task_check($activityTask);
-   - do_init($activityTask);
    - do_input_validation($activityTask);
 
 You can extend them if you wish but they work as is. **You must implement the do_activity though. This is where your logic will reside.**
