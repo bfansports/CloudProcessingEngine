@@ -32,7 +32,7 @@
  * It opens the JSON input and starts a execute a callback corresponding to the command
  */
 
-require __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/../vendor/autoload.php";
 
 use Aws\Swf\Exception;
 use SA\CpeSdk;
@@ -224,7 +224,7 @@ function usage($defaultConfigFile)
     exit(0);
 }
 
-function check_input_parameters($defaultConfigFile)
+function check_input_parameters(&$defaultConfigFile)
 {
     global $debug;
     global $cpeLogger;

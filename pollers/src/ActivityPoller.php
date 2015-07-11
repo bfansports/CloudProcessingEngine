@@ -34,7 +34,7 @@
  * It will process tasks only coming in the TaskList
  */
 
-require __DIR__ . "/../vendor/autoload.php";
+require_once __DIR__ . "/../vendor/autoload.php";
 
 use Aws\Swf\Exception;
 use SA\CpeSdk;
@@ -327,9 +327,7 @@ function check_input_parameters(&$defaultConfigFile)
     // Check config file
     if (!($config = json_decode(file_get_contents($defaultConfigFile))))
     {
-        $cpeLogger->log_out("FATAL", basename(__FILE__),
-            "Configuration file '$defaultConfigFile' invalid!");
-        exit(1);
+        die("Configuration file '$defaultConfigFile' invalid!");
     }
 
     # Validate against JSON Schemas
@@ -345,11 +343,11 @@ $defaultConfigFile =
 $config = check_input_parameters($defaultConfigFile);
 $cpeLogger->log_out("INFO", basename(__FILE__), $config->{'clients'});
 
-// Instantiate AcivityPoller
+// Instantiate ActivityPoller
 try {
     $activityPoller = new ActivityPoller($config);
 } 
-catch (CpeSdk\CTException $e) {
+catch (CpeSdk\CpeException $e) {
     $cpeLogger->log_out("FATAL",
         basename(__FILE__), $e->getMessage());
     exit(1);
