@@ -141,8 +141,19 @@ class ActivityPoller
             $this->activityHandler->do_task_check($activityTask);
             // Perform input validation
             $this->activityHandler->do_input_validation();
+
+            if ($this->debug)
+                $this->cpeLogger->log_out("DEBUG", basename(__FILE__), 
+                    "Activity input:\n" . print_r($this->activityHandler->input, true));
+        
             // Run activity task
             $result = $this->activityHandler->do_activity($activityTask);
+
+            
+            if ($this->debug)
+                $this->cpeLogger->log_out("DEBUG", basename(__FILE__), 
+                    "Activity output:\n" . print_r($result, true));
+        
         } catch (CpeSdk\CpeException $e) {
             $reason  = $e->ref;
             $details = $e->getMessage();
@@ -349,3 +360,4 @@ $cpeLogger->log_out("INFO", basename(__FILE__), "Starting activity tasks polling
 // Start polling loop
 while (42)
     $activityPoller->poll_for_activities();
+

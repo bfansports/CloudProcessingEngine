@@ -97,7 +97,7 @@ class InputPoller
                             basename(__FILE__), 
                             "JSON data invalid in queue: '$queue'");
                     else                    
-                        $this->handle_message($decoded, $client);
+                        $this->handle_message($decoded);
                 }
             } catch (CpeSdk\CpeException $e) {
                 $this->cpeLogger->log_out(
@@ -113,7 +113,7 @@ class InputPoller
     }
 
     // Receive an input, check if we know the command and exec the callback
-    public function handle_message($message, $client)
+    public function handle_message($message)
     {
         $this->validate_message($message);
 
@@ -141,7 +141,7 @@ class InputPoller
             );
 
         // We call the callback function that handles this message  
-        $this->{$this->typesMap[$message->{"type"}]}($message, $client);
+        $this->{$this->typesMap[$message->{"type"}]}($message);
     }
 
     
@@ -150,7 +150,7 @@ class InputPoller
      */
 
     // Start a new workflow in SWF to initiate new transcoding job
-    private function start_job($message, $client)
+    private function start_job($message)
     {
         if ($this->debug)
             $this->cpeLogger->log_out(
@@ -164,9 +164,6 @@ class InputPoller
             "name"    => $message->{'data'}->{'workflow'}->{'name'},
             "version" => $message->{'data'}->{'workflow'}->{'version'});
         
-        // Append client info to message data
-        $message->{"client"} = $client;
-
         // Request start SWF workflow
         try {
             $workflowRunId = $this->cpeSwfHandler->swf->startWorkflowExecution(array(
@@ -174,7 +171,7 @@ class InputPoller
                     "workflowId"   => uniqid('', true),
                     "workflowType" => $workflowType,
                     "taskList"     => array("name" => $message->{'data'}->{'workflow'}->{'taskList'}),
-                    "input"        => json_encode($message)
+                    "input"        => json_encode($message->{'data'})
                 ));
 
             $this->cpeLogger->log_out(

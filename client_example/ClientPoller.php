@@ -41,7 +41,6 @@ function handle_output($output)
 
     if (!isset($output->{'data'}) ||
         !isset($output->{'time'}) ||
-        !isset($output->{'job_id'}) ||
         !isset($output->{'type'}))
     {
         print("[ERROR] SQS message JSON format invalid! This is not a valid CPE message. Refer to the Client SDK documentation: http://sportarchive.github.io/CloudProcessingEngine-Client-SDK\n");
