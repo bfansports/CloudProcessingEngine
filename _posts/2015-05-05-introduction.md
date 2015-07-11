@@ -6,7 +6,6 @@ date: 2015-05-05 19:41:37
 order: 1
 ---
 
-> **IMPORTANT: This documentation is not yet finalized.** The "GET STARTED" section is not yet fully functional and some elements are still missing in the code. It will soon be updated.
 
 The beauty of Cloud services is that you can use them accross the Internet. Wherever you are.
 
