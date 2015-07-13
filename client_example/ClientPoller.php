@@ -107,7 +107,7 @@ function check_input_parameters()
                     throw new Exception("Unable to read the file");
         }
     } else {
-            throw new Exception("Please provide the client config file!");
+            throw new Exception("Please provide the client config file!\n");
     }
   
     if (isset($options['k'])) {
@@ -132,10 +132,9 @@ function check_input_parameters()
     }
     }
 
-check_input_parameters();
-
 // Instanciate ComSDK to communicate with the stack
 try {
+    check_input_parameters();
     $CpeClientSdk = new SA\CpeClientSdk($key, $secret, $region, $debug);
 } catch (Exception $e) {
     exit($e->getMessage());

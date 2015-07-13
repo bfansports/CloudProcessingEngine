@@ -251,12 +251,8 @@ function check_input_parameters(&$defaultConfigFile)
     
     if (!($config = json_decode(file_get_contents($defaultConfigFile))))
     {
-        $cpeLogger->log_out(
-            "FATAL", 
-            basename(__FILE__), 
-            "Configuration file '$configFile' invalid!"
-        );
-        exit(1);
+        throw new CpeSdk\CpeException("Configuration file '$defaultConfigFile' invalid!",
+                self::INVALID_JSON);
     }
 
     # Validate against JSON Schemas
