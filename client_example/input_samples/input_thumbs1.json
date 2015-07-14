@@ -8,17 +8,17 @@
     "input_asset": {
 	"type": "VIDEO",
 	"bucket": "cloudtranscode-dev",
-	"file": "/input/test1.mp4"
+	"file": "/input/video1.mp4"
     },
     "output_asset": 
     {
 	"type": "THUMB",
 	"mode": "snapshot",
 	"bucket": "cloudtranscode-dev",
-	"file": "/output/thumbs/test1_thumb.jpg",
+	"file": "/output/thumbs/video1_thumb.jpg",
 	"s3_rrs": true,
 	"s3_encrypt": true,
-	"size": "160x120",
+	"size": "-1:159",
 	"snapshot_sec": 5
     }
 }

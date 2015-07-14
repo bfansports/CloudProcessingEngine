@@ -149,8 +149,7 @@ class ActivityPoller
             // Run activity task
             $result = $this->activityHandler->do_activity($activityTask);
 
-            
-            if ($this->debug)
+            if ($this->debug && $result)
                 $this->cpeLogger->log_out("DEBUG", basename(__FILE__), 
                     "Activity output:\n" . print_r($result, true));
         

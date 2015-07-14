@@ -8,13 +8,13 @@
     "input_asset": {
 	"type": "VIDEO",
 	"bucket": "cloudtranscode-dev",
-	"file": "/input/test1.mp4"
+	"file": "/input/video1.mp4"
     },
     "output_asset": 
     {
 	"type": "VIDEO",
 	"bucket": "cloudtranscode-dev",
-	"file": "/output/test1.mp4",
+	"file": "/output/video1.mp4",
 	"s3_rrs": true,
 	"s3_encrypt": true,
 	"keep_ratio": false,
@@ -23,7 +23,7 @@
 	"watermark": {
 	    "bucket": "cloudtranscode-dev",
 	    "file": "/no-text-96px.png",
-	    "size": "96x96",
+	    "size": "96:96",
 	    "opacity": 0.2,
 	    "x": -20,
 	    "y": -20

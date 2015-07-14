@@ -165,6 +165,7 @@ class InputPoller
             "version" => $message->{'data'}->{'workflow'}->{'version'});
         
         // Request start SWF workflow
+        // We only pass $message->{'data'} as input for the WF
         try {
             $workflowRunId = $this->cpeSwfHandler->swf->startWorkflowExecution(array(
                     "domain"       => $message->{'data'}->{'workflow'}->{'domain'},
