@@ -97,7 +97,7 @@ Make sure you put the correct path to `ValidateInputAndAssetActivity.php` and `T
 
 ### Create a Plan
 
-The decider expects a plan so it can make its decisions. A plan describe your workflow. It is a YAML file that describes your workflow steps and the activities that will be used to process them.
+The decider expects a plan so it can make its decisions. A plan describes your workflow. It is a YAML file that describes your workflow steps and the activities that will be used to process them.
 
 **We will create a simple plan containing two steps:**
 
@@ -106,7 +106,9 @@ The decider expects a plan so it can make its decisions. A plan describe your wo
     
 A plan has been created for you so you can get started quickly. In the `decider` folder, open `docs/examples/ct_plan.yml` and take a look at the plan YAML syntax.
 
-For more information about the syntax and what you can do with your workflows, **head to the Decider documentation here:** http://sportarchive.github.io/CloudProcessingEngine-Decider
+For more information about the Decider, check the Decider entry: http://sportarchive.github.io/CloudProcessingEngine/comp/decider.html
+
+For syntax details and what you can do with your workflows, **head to the Decider documentation here:** http://sportarchive.github.io/CloudProcessingEngine-Decider
 
 *The input data describing the job to do (where the input video file is and which output video format we need), will be crafted in JSON and submitted to the workflow as input by our client app. Then the workflow will pass along this input to our Activity workers. The workers will read this input and will perform the transcoding we want.*
 
