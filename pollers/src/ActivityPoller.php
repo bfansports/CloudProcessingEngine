@@ -278,19 +278,10 @@ function check_input_parameters(&$defaultConfigFile)
     if (isset($options['d']))
         $debug = true;
 
-    // OVerrride config file
-    if (isset($options['c']))
-    {
-        $cpeLogger->log_out("INFO", basename(__FILE__),
-            "Config file: '" . $options['c'] . "'");
-        $defaultConfigFile = $options['c'];
-    }
-
     // Domain
     if (!isset($options['D']))
     {
-        $cpeLogger->log_out("ERROR", basename(__FILE__),
-            "You must provide a Domain");
+        echo "ERROR", basename(__FILE__), "You must provide a Domain";
         usage($defaultConfigFile);
     }
     $domain = $options['D'];
@@ -298,8 +289,7 @@ function check_input_parameters(&$defaultConfigFile)
     // Tasklist
     if (!isset($options['T']))
     {
-        $cpeLogger->log_out("ERROR", basename(__FILE__),
-            "You must provide a TaskList");
+        echo "ERROR", basename(__FILE__), "You must provide a TaskList";
         usage($defaultConfigFile);
     }
     $taskList = $options['T'];
@@ -307,8 +297,7 @@ function check_input_parameters(&$defaultConfigFile)
     // Activity name
     if (!isset($options['A']))
     {
-        $cpeLogger->log_out("ERROR", basename(__FILE__),
-            "You must provide an Activity name");
+        echo "ERROR", basename(__FILE__), "You must provide an Activity name";
         usage($defaultConfigFile);
     }
     $activityName = $options['A'];
@@ -317,11 +306,18 @@ function check_input_parameters(&$defaultConfigFile)
     // Activity version
     if (!isset($options['V']))
     {
-        $cpeLogger->log_out("ERROR", basename(__FILE__),
-            "You must provide an Activity version");
+        echo "ERROR", basename(__FILE__), "You must provide an Activity version";
         usage($defaultConfigFile);
     }
     $activityVersion = $options['V'];
+
+    // OVerrride config file
+    if (isset($options['c']))
+    {
+        $cpeLogger->log_out("INFO", basename(__FILE__),
+                            "Config file: '" . $options['c'] . "'");
+        $defaultConfigFile = $options['c'];
+    }
 
     // Check config file
     if (!($config = json_decode(file_get_contents($defaultConfigFile))))

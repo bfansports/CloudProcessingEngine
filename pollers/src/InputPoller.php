@@ -222,6 +222,7 @@ function usage($defaultConfigFile)
     echo("-h: Print this help\n");
     echo("-d: Debug mode\n");
     echo("-c <config_file path>: Optional parameter to override the default configuration file: '$defaultConfigFile'.\n");
+    echo("-n <client_name>: Rather than using a config file, get client from INPUT_QUEUE and OUTPUT_QUEUE environment variables\n");
     exit(0);
 }
 
@@ -231,11 +232,15 @@ function check_input_parameters(&$defaultConfigFile)
     global $cpeLogger;
     
     // Handle input parameters
-    if (!($options = getopt("c:hd")))
+    if (!($options = getopt("c:hdn:"))) {
+        echo "Invalid CLI input.\n";
         usage($defaultConfigFile);
+    }
     
-    if (isset($options['h']))
+    if (isset($options['h'])) {
+        echo "Usage requested using -h\n";
         usage($defaultConfigFile);
+    }
     
     if (isset($options['d']))
         $debug = true;
@@ -249,11 +254,25 @@ function check_input_parameters(&$defaultConfigFile)
         );
         $defaultConfigFile = $options['c'];
     }
-    
-    if (!($config = json_decode(file_get_contents($defaultConfigFile))))
+
+    $config = new \stdClass;
+    if (!isset($options['n'])) {
+        if (!($config = json_decode(file_get_contents($defaultConfigFile)))) {
+            throw new CpeSdk\CpeException(
+                "Configuration file '$defaultConfigFile' invalid!"
+            );
+        }
+    }
+
+    if (isset($options['n']))
     {
-        throw new CpeSdk\CpeException("Configuration file '$defaultConfigFile' invalid!",
-                self::INVALID_JSON);
+        $config->clients = [(object)[
+            'name' => $options['n'],
+            'queues' => [
+                'input' => getenv('INPUT_QUEUE'),
+                'output' => getenv('OUTPUT_QUEUE'),
+            ],
+        ]];
     }
 
     # Validate against JSON Schemas
@@ -267,13 +286,14 @@ function check_input_parameters(&$defaultConfigFile)
 $defaultConfigFile =
     realpath(dirname(__FILE__)) . "/../config/cpeConfig.json";
 $config = check_input_parameters($defaultConfigFile);
-$cpeLogger->log_out("INFO", basename(__FILE__), $config->{'clients'});
+$cpeLogger->log_out("INFO", basename(__FILE__), $config);
 
 // Create InputPoller object
 try {
     $inputPoller = new InputPoller($config);
-} 
+}
 catch (CpeSdk\CpeException $e) {
+    echo $e->getMessage();
     $cpeLogger->log_out(
         "FATAL", 
         basename(__FILE__), 
