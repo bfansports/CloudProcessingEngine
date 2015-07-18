@@ -232,15 +232,10 @@ function check_input_parameters(&$defaultConfigFile)
     global $cpeLogger;
     
     // Handle input parameters
-    if (!($options = getopt("c:hdn:"))) {
-        echo "Invalid CLI input.\n";
+    $options = getopt("c::hd");
+
+    if (isset($options['h']))
         usage($defaultConfigFile);
-    }
-    
-    if (isset($options['h'])) {
-        echo "Usage requested using -h\n";
-        usage($defaultConfigFile);
-    }
     
     if (isset($options['d']))
         $debug = true;
