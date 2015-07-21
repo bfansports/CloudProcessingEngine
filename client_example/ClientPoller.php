@@ -38,21 +38,6 @@ function handle_output($output)
     if ($debug) {
             print_r($output);
     }
-
-    if (!isset($output->{'data'}) ||
-        !isset($output->{'time'}) ||
-        !isset($output->{'type'}))
-    {
-        print("[ERROR] SQS message JSON format invalid! This is not a valid CPE message. Refer to the Client SDK documentation: http://sportarchive.github.io/CloudProcessingEngine-Client-SDK\n");
-        return false;
-    }
-    
-    if (isset($output->{'data'}->{'activity'}))
-        print($output->{'time'} . " " . $output->{'type'} . "(" 
-            . $output->{'data'}->{'activity'}->{'activityId'} . ")\n");
-    else
-        print($output->{'time'} . " " . $output->{'type'} . "(" 
-            . $output->{'data'}->{'workflow'}->{'workflowId'} . ")\n");
 }
 
 /**

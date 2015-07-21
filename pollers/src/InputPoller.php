@@ -42,6 +42,7 @@ class InputPoller
     private $debug;
     private $config;
     private $cpeSqsListener;
+    private $cpeSqsWriter;
     private $cpeSwfHandler;
     private $cpeLogger;
     private $typesMap;
@@ -71,6 +72,8 @@ class InputPoller
         
         // For listening to the Input SQS queue
         $this->cpeSqsListener = new CpeSdk\Sqs\CpeSqsListener($this->debug);
+        // For writing to SQS queue
+        $this->cpeSqsWriter   = new CpeSdk\Sqs\CpeSqsWriter($this->debug);
 
         // For creating SWF object 
         $this->cpeSwfHandler  = new CpeSdk\Swf\CpeSwfHandler($this->debug);
@@ -166,10 +169,12 @@ class InputPoller
         
         // Request start SWF workflow
         // We only pass $message->{'data'} as input for the WF
+        // $message->{'data'}->{'workflow'}->{'domain'} MUST be contained in the JSON input
         try {
+            $workflowId = uniqid('', true);
             $workflowRunId = $this->cpeSwfHandler->swf->startWorkflowExecution(array(
                     "domain"       => $message->{'data'}->{'workflow'}->{'domain'},
-                    "workflowId"   => uniqid('', true),
+                    "workflowId"   => $workflowId,
                     "workflowType" => $workflowType,
                     "taskList"     => array("name" => $message->{'data'}->{'workflow'}->{'taskList'}),
                     "input"        => json_encode($message->{'data'})
@@ -179,6 +184,10 @@ class InputPoller
                 "INFO",
                 basename(__FILE__),
                 "New workflow submitted to SWF: ".$workflowRunId->get('runId'));
+
+            // Send WORKFLOW_SCHEDULED message back to client
+            $this->cpeSqsWriter->workflow_scheduled($workflowRunId->get('runId'), $workflowId, $message);
+                
         } catch (\Aws\Swf\Exception\SwfException $e) {
             $this->cpeLogger->log_out(
                 "ERROR",
@@ -196,10 +205,10 @@ class InputPoller
     {
         if (!isset($message) || 
             !isset($message->{"time"})   || $message->{"time"} == "" || 
-            !isset($message->{"job_id"}) || $message->{"job_id"} == "" || 
+            !isset($message->{"jobId"})  || $message->{"jobId"} == "" || 
             !isset($message->{"type"})   || $message->{"type"} == "" || 
             !isset($message->{"data"})   || $message->{"data"} == "")
-            throw new CpeSdk\CpeException("'time', 'type', 'job_id' or 'data' fields missing in JSON message file!",
+            throw new CpeSdk\CpeException("'time', 'type', 'jobId' or 'data' fields missing in JSON message file!",
                 self::INVALID_JSON);
         
         if (!isset($message->{'data'}->{'workflow'}))
