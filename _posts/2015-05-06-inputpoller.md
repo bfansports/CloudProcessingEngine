@@ -11,6 +11,7 @@ The InputPoller is a daemon that listens to a client application `input` queue. 
 The InputPoller initiate your workflows in SWF. Upon starting a workflow, the InputPoller will send your client app an SQS message back containing the following:
 
 ```
+    [time]  => 1437447258.9809
     [type]  => WORKFLOW_SCHEDULED
     [jobId] => 954e8de9dfa0d44d1e2f21eda6881e74
     [runId] => 22JYNIVqvmTcYlP3DDytCuoUSlLV2zD6B0K3zBg/b8e1Q=
