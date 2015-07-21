@@ -54,6 +54,8 @@ Run it as follow:
 
 It should start polling your output SQS queue for incoming messages.
 
+> The client poller is simplistic and makes no use of the coming messages from the stack. In a real world application, you would track the 'runId' you receive with the WORKFLOW_SCHEDULED message. This message is the first you will receive after starting a new job. Using the 'runId' you can associate all messages internaly in your application and make use of the information you receive.
+
 #### ClientCommander.php
 
 This program sends commands to the stack. It can start a new job. It is interactive and will ask you to submit a JSON payload to send to your workflow as input data.
