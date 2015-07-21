@@ -84,6 +84,25 @@ $> tail -f /var/tmp/logs/cpe/InputPoller.php.log
 1436209689 [DEBUG] [CpeSqsListener.php] Polling from 'https://sqs.us-east-1.amazonaws.com/441276146445/nico-ct-input' ...
 ```
 
+#### Input requirements
+
+The InputPoller listens for input commands from the client application and performs actions on SWF. The JSON input payload you send over to the InputPoller MUST contains the following required field:
+
+   - `workflow`: Contains information about the workflow you want the InputPoller to interact with. The format is as follow:
+
+```json
+    "workflow": {
+        "name": "Transcode",
+        "version": "1.0",
+        "taskList": "basic_transcode",
+        "domain": "SADomain"
+    }
+```
+
+This field contains the workflow `name` and `version` that will be used to perform the command on SWF. Most importantly it contains the `Domain` in which your workflow run or will run and the `taskList` which is the Decision TaskList your Decider is listening to. Make sure it all match.
+
+> Examples of JSON input can be found in the `client_example/input_sample` folder.
+
 ### SWF documentation
 
 http://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-welcome.html

@@ -47,10 +47,12 @@ Usage: php ActivityPoller.php -D <domain> -T <task_list> -A <activity_name> -V <
 
 ### Run it
 
-The following command will start the ActivityPoller daemon. It will listen to the `sa_transcode` Activity TaskList for the `SADomain` SWF domain, and will execute the `TranscodeActivity` Activity version `v2`.
+The following command will start the ActivityPoller daemon. It will listen to the `TranscodeActivity-v2` Activity TaskList for the `SADomain` SWF domain, and will execute the `TranscodeActivity` Activity version `v2`.
+
+> **IMPORTANT:** The Decider will by default set the ActivityTask list name for you and will register it in SWF. It uses the `activity_name`-`activity_version`. Make sure your ActivityPoller is set to listen to the proper TaskList. 
 
 ```
-$> php ActivityPoller.php -D SADomain -T sa_transcode -A TranscodeActivity -V v2 -d &
+$> php ActivityPoller.php -D SADomain -T TranscodeActivity-v2 -A TranscodeActivity -V v2 -d &
 
 ```
 
