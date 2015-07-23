@@ -54,37 +54,7 @@ There you must configure:
    - Your client app SQS queue that you must have created. 
    - The list of activities your Workflow is going to handle and where their code is located.
 
-The config file looks as follow:
-
-```json
-{
-    "clients": [
-        {
-            "name": "[CLIENT NAME]",
-            "queues": {
-                "input": "[INPUT QUEUE]",
-                "output": "[OUTPUT QUEUE]"
-            }
-        }
-    ],
-    "activities": [
-        {
-            "name": "ValidateInputAndAsset",
-            "version": "v1",
-            "description": "Check input command and asset to be transcoded. FFProbe the input file.",
-            "file": "[PATH TO CT PROJECT AND FILE]/ValidateInputAndAssetActivity.php",
-            "class": "ValidateInputAndAssetActivity",
-        },
-        {
-            "name": "TranscodeAsset",
-            "version": "v1",
-            "description": "Perform transcoding on input asset and generate output file(s)",
-            "file": "[PATH TO CT PROJECT AND FILE]/TranscodeAssetActivity.php",
-            "class": "TranscodeAssetActivity"
-        }
-    ]
-}
-```
+Check what the configuration file look like in the [Config files](/CloudProcessingEngine/config/config-files.html) section.
 
 **Cloud Transcode declares two types of activity workers:**
 

@@ -77,8 +77,8 @@ To run these commands, you must have the default configuration file `cpeConfig.j
 
 ```
     $> cd CloudProcessingEngine/pollers
-    $> php ActivityPoller.php -d -D MyDomain -T ValidateInputAndAsset-v2 -A ValidateInputAndAsset -V v2 &
-    $> tail -f /var/tmp/logs/cpe/ActivityPoller.php-ValidateInputAndAsset.log
+    $> php ActivityPoller.php -d -D MyDomain -T ValidateAsset-v2 -A ValidateAsset -V v2 &
+    $> tail -f /var/tmp/logs/cpe/ActivityPoller.php-ValidateAsset.log
 ```
 
 When this worker receives a task to process you will see output in the log file.

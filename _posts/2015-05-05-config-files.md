@@ -43,11 +43,11 @@ The config file looks as follow:
     ],
     "activities": [
         {
-            "name": "ValidateInputAndAsset",
+            "name": "ValidateAsset",
             "version": "v1",
             "description": "Check input command and asset to be transcoded. FFProbe the input file.",
-            "file": "[PATH TO CT PROJECT AND FILE]/ValidateInputAndAssetActivity.php",
-            "class": "ValidateInputAndAssetActivity",
+            "file": "[PATH TO CT PROJECT AND FILE]/ValidateAssetActivity.php",
+            "class": "ValidateActivity",
         },
         {
             "name": "TranscodeAsset",
