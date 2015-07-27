@@ -88,6 +88,7 @@ class InputPoller
         foreach ($this->config->{'clients'} as $client)
         {
             $msg = null;
+            $this->cpeLogger->log_out("DEBUG", __DIR__, "Polling from client: " . print_r($client, true));
             
             // Long Polling messages from client input queue
             $queue = $client->{'queues'}->{'input'};
@@ -241,7 +242,7 @@ function check_input_parameters(&$defaultConfigFile)
     global $cpeLogger;
     
     // Handle input parameters
-    $options = getopt("c::hd");
+    $options = getopt("c:hdn:");
 
     if (isset($options['h']))
         usage($defaultConfigFile);
@@ -272,7 +273,7 @@ function check_input_parameters(&$defaultConfigFile)
     {
         $config->clients = [(object)[
             'name' => $options['n'],
-            'queues' => [
+            'queues' => (object)[
                 'input' => getenv('INPUT_QUEUE'),
                 'output' => getenv('OUTPUT_QUEUE'),
             ],
