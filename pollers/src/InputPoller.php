@@ -108,6 +108,11 @@ class InputPoller
                     "ERROR", 
                     basename(__FILE__), 
                     $e->getMessage().print_r($msg, true));
+            } catch (\Exception $e) {
+                $this->cpeLogger->log_out(
+                    "ERROR", 
+                    basename(__FILE__), 
+                    $e->getMessage().print_r($msg, true));
             }
             
             // Message polled. Valid or not, we delete it from SQS
@@ -195,6 +200,11 @@ class InputPoller
                 basename(__FILE__),
                 "Unable to start workflow!"
                 . $e->getMessage());
+        } catch (\Exception $e) {
+            $this->cpeLogger->log_out(
+                "ERROR", 
+                basename(__FILE__), 
+                $e->getMessage());
         }
     }
 
