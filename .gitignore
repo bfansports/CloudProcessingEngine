@@ -9,7 +9,6 @@ client_example/clientConfig.json
 pollers/vendor/*
 client_example/vendor/*
 composer.phar
-composer.lock
 
 # Ignore any build output
 build/*
