@@ -9,8 +9,4 @@ RUN apt-get update \
     && apt-get purge -y git \
     && apt-get autoremove -y
 
-ENV AWS_REGION xyz
-ENV AWS_ACCESS_KEY_ID xyz
-ENV AWS_SECRET_ACCESS_KEY xyz
-
 ENTRYPOINT ["/usr/src/cloudprocessingengine/bootstrap.sh"]
