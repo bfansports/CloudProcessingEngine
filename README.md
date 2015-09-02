@@ -18,19 +18,19 @@ Before getting started, you need a good understanding of those two services. Rea
 To use CPE, you need to deploy the CPE stack which is composed of three components:
    - **Decider:** Listens to Amazon SWF and make decision on "what's next" in your workflow.
    - **InputPoller:** Listens to Amazon SQS for commands from your client applications. Your client apps can start new workflows by sending a `start_job` command along with some JSON payload.
-   - **ActivityPoller:** Listens to SWF for incoming tasks. One ActivityPoller is a worker so you can have many running. They all listen on a particular queue (TaskList) and process task SWF assign to them.
+   - **ActivityPoller:** Listens to SWF for incoming tasks. An ActivityPoller is a worker processing a certain type of ActivityTask (Read SWF doc). You can have many running. They all listen on a particular queue (TaskList) and only process tasks assign to them by SWF.
 
-The ActivityPoller execute Activities that you develop. You must create an Activity for each type of task your workflow can handle. So you will have several types of workers handling different type of activities in your workflow. Each worker is a daemon that run on a box or in a Docker container.
+Each ActivityPoller executes Activities that you develop. You must create an Activity for each type of task your workflow will handle. So you can have several types of workers handling different type of activities in your workflow. Each worker is a daemon that run on a box or in a Docker container, locally or in the Cloud.
 
-Workflows are arbitrary and are defined using a YAML plan that you must write yourself. A plan defines your workflow steps and which activity executes each step. Input and Output data can be passed on from one activity to another.
+Workflows are arbitrary and are defined using a YAML plan that you must write yourself. A plan defines your workflow steps and which ActivityPoller type will execute each step. Input and Output data can be passed on from one activity to another.
 
 ## Example
 
-Transcoding media files (videos, audio, documents, etc) requires processing power on demand that must scale up if a lot of transcoding is required. This business requirement gave birth to CPE.
+Transcoding media files (videos, audio, documents, etc) requires processing power on demand and must be elastic if a lot of transcoding is required. This business requirement gave birth to CPE.
 
-The Cloud Transcode (CT) project implements the activities (workers) in charge of transcoding media files. The ActivityPoller loads those activities and use them to process incoming transcoding tasks. CT activities download the media files from AWS S3, transcode them and push them back to S3.
+The Cloud Transcode (CT) project implements activities (workers) in charge of transcoding media files. The ActivityPoller loads those activities and use them to process incoming transcoding tasks. CT activities download the media files from AWS S3, transcode them at scale and upload them back to S3.
 
-See the Cloud Transcode documentation for a working example and more information: https://github.com/sportarchive/CloudTranscode
+See the Cloud Transcode documentation for a working example of CPE activities and more information: https://github.com/sportarchive/CloudTranscode
 
 # Documentation
 
