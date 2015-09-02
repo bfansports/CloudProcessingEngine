@@ -71,12 +71,12 @@ class InputPoller
         ];
         
         // For listening to the Input SQS queue
-        $this->cpeSqsListener = new CpeSdk\Sqs\CpeSqsListener($this->debug);
+        $this->cpeSqsListener = new CpeSdk\Sqs\CpeSqsListener($this->debug, $cpeLogger);
         // For writing to SQS queue
-        $this->cpeSqsWriter   = new CpeSdk\Sqs\CpeSqsWriter($this->debug);
+        $this->cpeSqsWriter   = new CpeSdk\Sqs\CpeSqsWriter($this->debug, $cpeLogger);
 
         // For creating SWF object 
-        $this->cpeSwfHandler  = new CpeSdk\Swf\CpeSwfHandler($this->debug);
+        $this->cpeSwfHandler  = new CpeSdk\Swf\CpeSwfHandler($this->debug, $cpeLogger);
     }
     
     // Poll from the 'input' SQS queue of all clients
@@ -234,15 +234,16 @@ class InputPoller
  */
 
 $debug = false;
-$cpeLogger = new CpeSdk\CpeLogger();
+$cpeLogger;
 
 function usage($defaultConfigFile)
 {
-    echo("Usage: php ". basename(__FILE__) . " [-h] [-d] -c <config_file path>\n");
+    echo("Usage: php ". basename(__FILE__) . " [-h] [-d] [-n <client_name>] [-l <log path>] -c <config_file path>\n");
     echo("-h: Print this help\n");
     echo("-d: Debug mode\n");
-    echo("-c <config_file path>: Optional parameter to override the default configuration file: '$defaultConfigFile'.\n");
+    echo("-l <log_path>: Location where logs will be dumped in (folder).\n");
     echo("-n <client_name>: Rather than using a config file, get client from INPUT_QUEUE and OUTPUT_QUEUE environment variables\n");
+    echo("-c <config_file path>: Optional parameter to override the default configuration file: '$defaultConfigFile'.\n");
     exit(0);
 }
 
@@ -252,13 +253,20 @@ function check_input_parameters(&$defaultConfigFile)
     global $cpeLogger;
     
     // Handle input parameters
-    $options = getopt("c:hdn:");
+    $options = getopt("c:l:hdn:");
 
     if (isset($options['h']))
         usage($defaultConfigFile);
     
     if (isset($options['d']))
         $debug = true;
+    
+    $logPath = null;
+    if (isset($options['l']))
+    {
+        $logPath = $options['l'];
+    }
+    $cpeLogger = new CpeSdk\CpeLogger($logPath);
     
     if (isset($options['c']))
     {
