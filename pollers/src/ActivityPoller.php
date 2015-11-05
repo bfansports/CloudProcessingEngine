@@ -344,7 +344,6 @@ function check_input_parameters(&$defaultConfigFile)
 $defaultConfigFile =
     realpath(dirname(__FILE__)) . "/../config/cpeConfig.json";
 $config = check_input_parameters($defaultConfigFile);
-$cpeLogger->log_out("INFO", basename(__FILE__), $config->{'clients'});
 
 // Instantiate ActivityPoller
 try {
