@@ -187,7 +187,7 @@ class ActivityPoller
                 $this->activityVersion == $knownActivity->{"version"})
             {
                 $activityToHandle = $knownActivity;
-
+                
                 if (!file_exists($activityToHandle->{"file"}))
                 {
                     $this->cpeLogger->log_out("ERROR", basename(__FILE__),
@@ -211,7 +211,8 @@ class ActivityPoller
                             "name"    => $activityToHandle->{"name"},
                             "version" => $activityToHandle->{"version"}
                         ], 
-                        $this->debug
+                        $this->debug,
+                        $this->cpeLogger
                     );
                 
                 $this->cpeLogger->log_out("INFO", basename(__FILE__),
@@ -244,10 +245,11 @@ $cpeLogger;
 // Usage
 function usage($defaultConfigFile)
 {
-    echo("Usage: php ". basename(__FILE__) . " -D <domain> -T <task_list> -A <activity_name> -V <activity_version> [-h] [-d] [-c <config_file path>]\n");
+    echo("Usage: php ". basename(__FILE__) . " -D <domain> -T <task_list> -A <activity_name> -V <activity_version> [-h] [-d] [-c <config_file path>] [-l <log path>]\n");
     echo("-h: Print this help\n");
     echo("-d: Debug mode\n");
     echo("-c <config_file path>: Optional parameter to override the default configuration file: '$defaultConfigFile'.\n");
+    echo("-l <log_path>: Location where logs will be dumped in (folder).\n");
     echo("-D <domain>: SWF domain your Workflow runs on.\n");
     echo("-T <task list>: Specify the Activity Task List this activity will listen to. An Activity Task list is the queue your Activity poller will listen to for new tasks.\n");
     echo("-A <activity name>: Activity name this Poller can process.\n");
@@ -268,7 +270,7 @@ function check_input_parameters(&$defaultConfigFile)
     global $activityVersion;
     
     // Handle input parameters
-    if (!($options = getopt("D:T:A:V:c:hd")))
+    if (!($options = getopt("D:T:A:V:c:l:hd")))
         usage($defaultConfigFile);
     
     if (!count($options) || isset($options['h']))
@@ -301,7 +303,13 @@ function check_input_parameters(&$defaultConfigFile)
         usage($defaultConfigFile);
     }
     $activityName = $options['A'];
-    $cpeLogger = new CpeSdk\CpeLogger(null, $activityName);
+    
+    $logPath = null;
+    if (isset($options['l']))
+    {
+        $logPath = $options['l'];
+    }
+    $cpeLogger = new CpeSdk\CpeLogger($logPath, $activityName);
     
     // Activity version
     if (!isset($options['V']))
@@ -336,7 +344,6 @@ function check_input_parameters(&$defaultConfigFile)
 $defaultConfigFile =
     realpath(dirname(__FILE__)) . "/../config/cpeConfig.json";
 $config = check_input_parameters($defaultConfigFile);
-$cpeLogger->log_out("INFO", basename(__FILE__), $config->{'clients'});
 
 // Instantiate ActivityPoller
 try {

@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "909f0c3474d02b8e318b11f1e8894010",
+    "hash": "b03f96eb7a92f2398831851bbcec6afa",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "2.8.23",
+            "version": "2.8.20",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "e35cb161da83e39453e3ac9c27536e102b008fb8"
+                "reference": "e01825efad025dbe6d88997e02bd32ec80814381"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/e35cb161da83e39453e3ac9c27536e102b008fb8",
-                "reference": "e35cb161da83e39453e3ac9c27536e102b008fb8",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/e01825efad025dbe6d88997e02bd32ec80814381",
+                "reference": "e01825efad025dbe6d88997e02bd32ec80814381",
                 "shasum": ""
             },
             "require": {
@@ -67,7 +67,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2015-11-03 00:09:15"
+            "time": "2015-09-03 22:25:15"
         },
         {
             "name": "guzzle/guzzle",
@@ -165,88 +165,22 @@
             "time": "2015-03-18 18:23:50"
         },
         {
-            "name": "justinrainbow/json-schema",
-            "version": "1.3.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/justinrainbow/json-schema.git",
-                "reference": "87b54b460febed69726c781ab67462084e97a105"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/justinrainbow/json-schema/zipball/87b54b460febed69726c781ab67462084e97a105",
-                "reference": "87b54b460febed69726c781ab67462084e97a105",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "require-dev": {
-                "json-schema/json-schema-test-suite": "1.1.0",
-                "phpdocumentor/phpdocumentor": "~2",
-                "phpunit/phpunit": "~3.7"
-            },
-            "bin": [
-                "bin/validate-json"
-            ],
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.4.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-0": {
-                    "JsonSchema": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Bruno Prieto Reis",
-                    "email": "bruno.p.reis@gmail.com"
-                },
-                {
-                    "name": "Justin Rainbow",
-                    "email": "justin.rainbow@gmail.com"
-                },
-                {
-                    "name": "Igor Wiedler",
-                    "email": "igor@wiedler.ch"
-                },
-                {
-                    "name": "Robert Schönthal",
-                    "email": "seroscho@googlemail.com"
-                }
-            ],
-            "description": "A library to validate a json schema.",
-            "homepage": "https://github.com/justinrainbow/json-schema",
-            "keywords": [
-                "json",
-                "schema"
-            ],
-            "time": "2014-08-25 02:48:14"
-        },
-        {
-            "name": "sportarchive/cloud-processing-engine-sdk",
+            "name": "sportarchive/cloud-processing-engine-client-sdk-php",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/sportarchive/CloudProcessingEngine-SDK.git",
-                "reference": "a0caf78df5462014b57936d43f514aa4537f0e53"
+                "url": "https://github.com/sportarchive/CloudProcessingEngine-Client-SDK-PHP.git",
+                "reference": "4ea6520fdd3efbd9bda491e776c51f8b744f2c05"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sportarchive/CloudProcessingEngine-SDK/zipball/a0caf78df5462014b57936d43f514aa4537f0e53",
-                "reference": "a0caf78df5462014b57936d43f514aa4537f0e53",
+                "url": "https://api.github.com/repos/sportarchive/CloudProcessingEngine-Client-SDK-PHP/zipball/4ea6520fdd3efbd9bda491e776c51f8b744f2c05",
+                "reference": "4ea6520fdd3efbd9bda491e776c51f8b744f2c05",
                 "shasum": ""
             },
             "require": {
                 "aws/aws-sdk-php": "2.*",
-                "php": ">=5.5"
+                "php": ">=5.6"
             },
             "require-dev": {
                 "phpdocumentor/phpdocumentor": "2.*"
@@ -264,26 +198,27 @@
                     "email": "support@sportarchive.tv"
                 }
             ],
-            "description": "PHP SDK for the Cloud Processing Engine activities. Use this SDK to create your custom activities for the CPE project",
-            "homepage": "https://github.com/sportarchive/CloudProcessingEngine-SDK",
+            "description": "PHP SDK for the Cloud Processing Engine client applications. Allows communication with the CPE Stack over SQS: start_job, get activity progress, etc. It is a simple SQS wrapper.",
+            "homepage": "https://github.com/sportarchive/CloudProcessingEngine-Client-SDK-PHP",
             "keywords": [
                 "Cloud Processing Engine",
-                "Cloud Transcode"
+                "CloudProcessingEngine",
+                "sqs"
             ],
-            "time": "2015-11-05 01:23:49"
+            "time": "2015-08-04 21:55:47"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.7.6",
+            "version": "v2.7.3",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "87a5db5ea887763fa3a31a5471b512ff1596d9b8"
+                "url": "https://github.com/symfony/EventDispatcher.git",
+                "reference": "9310b5f9a87ec2ea75d20fec0b0017c77c66dac3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/87a5db5ea887763fa3a31a5471b512ff1596d9b8",
-                "reference": "87a5db5ea887763fa3a31a5471b512ff1596d9b8",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/9310b5f9a87ec2ea75d20fec0b0017c77c66dac3",
+                "reference": "9310b5f9a87ec2ea75d20fec0b0017c77c66dac3",
                 "shasum": ""
             },
             "require": {
@@ -294,6 +229,7 @@
                 "symfony/config": "~2.0,>=2.0.5",
                 "symfony/dependency-injection": "~2.6",
                 "symfony/expression-language": "~2.6",
+                "symfony/phpunit-bridge": "~2.7",
                 "symfony/stopwatch": "~2.3"
             },
             "suggest": {
@@ -327,14 +263,14 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-11 09:39:48"
+            "time": "2015-06-18 19:21:56"
         }
     ],
     "packages-dev": [],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "sportarchive/cloud-processing-engine-sdk": 20
+        "sportarchive/cloud-processing-engine-client-sdk-php": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
