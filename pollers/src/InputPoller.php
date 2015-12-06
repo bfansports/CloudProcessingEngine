@@ -192,7 +192,7 @@ class InputPoller
                 "New workflow submitted to SWF: ".$workflowRunId->get('runId'));
 
             // Send WORKFLOW_SCHEDULED message back to client
-            $this->cpeSqsWriter->workflow_scheduled($workflowRunId->get('runId'), $workflowId, $message);
+            $this->cpeSqsWriter->workflow_scheduled($workflowType, $workflowRunId->get('runId'), $workflowId, $message);
                 
         } catch (\Aws\Swf\Exception\SwfException $e) {
             $this->cpeLogger->log_out(
