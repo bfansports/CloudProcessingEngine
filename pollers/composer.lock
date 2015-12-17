@@ -5,6 +5,7 @@
         "This file is @generated automatically"
     ],
     "hash": "909f0c3474d02b8e318b11f1e8894010",
+    "content-hash": "3d831e3e0545bd20fed9a31b7461df37",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -236,12 +237,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sportarchive/CloudProcessingEngine-SDK.git",
-                "reference": "22977c2359f8480a1cfd6eabf64623cce0ac2eb5"
+                "reference": "90431d8831fca39d2d000454f14999083ac0c4f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sportarchive/CloudProcessingEngine-SDK/zipball/22977c2359f8480a1cfd6eabf64623cce0ac2eb5",
-                "reference": "22977c2359f8480a1cfd6eabf64623cce0ac2eb5",
+                "url": "https://api.github.com/repos/sportarchive/CloudProcessingEngine-SDK/zipball/90431d8831fca39d2d000454f14999083ac0c4f8",
+                "reference": "90431d8831fca39d2d000454f14999083ac0c4f8",
                 "shasum": ""
             },
             "require": {
@@ -270,7 +271,7 @@
                 "Cloud Processing Engine",
                 "Cloud Transcode"
             ],
-            "time": "2015-12-06 23:18:38"
+            "time": "2015-12-17 18:48:46"
         },
         {
             "name": "symfony/event-dispatcher",
