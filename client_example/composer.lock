@@ -8,16 +8,16 @@
     "packages": [
         {
             "name": "aws/aws-sdk-php",
-            "version": "2.8.20",
+            "version": "2.8.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "e01825efad025dbe6d88997e02bd32ec80814381"
+                "reference": "54b67f902bb2c5bbab481bc3c46537752a018830"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/e01825efad025dbe6d88997e02bd32ec80814381",
-                "reference": "e01825efad025dbe6d88997e02bd32ec80814381",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/54b67f902bb2c5bbab481bc3c46537752a018830",
+                "reference": "54b67f902bb2c5bbab481bc3c46537752a018830",
                 "shasum": ""
             },
             "require": {
@@ -67,7 +67,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2015-09-03 22:25:15"
+            "time": "2015-11-16 22:34:08"
         },
         {
             "name": "guzzle/guzzle",
@@ -170,17 +170,17 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sportarchive/CloudProcessingEngine-Client-SDK-PHP.git",
-                "reference": "4ea6520fdd3efbd9bda491e776c51f8b744f2c05"
+                "reference": "f6336a53da81d1a1b4b7079dd4280344db452e67"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sportarchive/CloudProcessingEngine-Client-SDK-PHP/zipball/4ea6520fdd3efbd9bda491e776c51f8b744f2c05",
-                "reference": "4ea6520fdd3efbd9bda491e776c51f8b744f2c05",
+                "url": "https://api.github.com/repos/sportarchive/CloudProcessingEngine-Client-SDK-PHP/zipball/f6336a53da81d1a1b4b7079dd4280344db452e67",
+                "reference": "f6336a53da81d1a1b4b7079dd4280344db452e67",
                 "shasum": ""
             },
             "require": {
                 "aws/aws-sdk-php": "2.*",
-                "php": ">=5.6"
+                "php": ">=5.5"
             },
             "require-dev": {
                 "phpdocumentor/phpdocumentor": "2.*"
@@ -205,20 +205,20 @@
                 "CloudProcessingEngine",
                 "sqs"
             ],
-            "time": "2015-08-04 21:55:47"
+            "time": "2015-11-05 01:24:15"
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.7.3",
+            "version": "v2.8.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "9310b5f9a87ec2ea75d20fec0b0017c77c66dac3"
+                "url": "https://github.com/symfony/event-dispatcher.git",
+                "reference": "a5eb815363c0388e83247e7e9853e5dbc14999cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/9310b5f9a87ec2ea75d20fec0b0017c77c66dac3",
-                "reference": "9310b5f9a87ec2ea75d20fec0b0017c77c66dac3",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/a5eb815363c0388e83247e7e9853e5dbc14999cc",
+                "reference": "a5eb815363c0388e83247e7e9853e5dbc14999cc",
                 "shasum": ""
             },
             "require": {
@@ -226,11 +226,10 @@
             },
             "require-dev": {
                 "psr/log": "~1.0",
-                "symfony/config": "~2.0,>=2.0.5",
-                "symfony/dependency-injection": "~2.6",
-                "symfony/expression-language": "~2.6",
-                "symfony/phpunit-bridge": "~2.7",
-                "symfony/stopwatch": "~2.3"
+                "symfony/config": "~2.0,>=2.0.5|~3.0.0",
+                "symfony/dependency-injection": "~2.6|~3.0.0",
+                "symfony/expression-language": "~2.6|~3.0.0",
+                "symfony/stopwatch": "~2.3|~3.0.0"
             },
             "suggest": {
                 "symfony/dependency-injection": "",
@@ -239,13 +238,16 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.7-dev"
+                    "dev-master": "2.8-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
                     "Symfony\\Component\\EventDispatcher\\": ""
-                }
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -263,7 +265,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2015-06-18 19:21:56"
+            "time": "2015-10-30 20:15:42"
         }
     ],
     "packages-dev": [],
