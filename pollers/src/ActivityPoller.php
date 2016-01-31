@@ -283,7 +283,7 @@ function check_input_parameters(&$defaultConfigFile)
     // Domain
     if (!isset($options['D']))
     {
-        echo "ERROR", basename(__FILE__), "You must provide a Domain";
+        echo "ERROR: You must provide a Domain\n";
         usage($defaultConfigFile);
     }
     $domain = $options['D'];
@@ -291,7 +291,7 @@ function check_input_parameters(&$defaultConfigFile)
     // Tasklist
     if (!isset($options['T']))
     {
-        echo "ERROR", basename(__FILE__), "You must provide a TaskList";
+        echo "ERROR: You must provide a TaskList\n";
         usage($defaultConfigFile);
     }
     $taskList = $options['T'];
@@ -299,7 +299,7 @@ function check_input_parameters(&$defaultConfigFile)
     // Activity name
     if (!isset($options['A']))
     {
-        echo "ERROR", basename(__FILE__), "You must provide an Activity name";
+        echo "ERROR: You must provide an Activity name\n";
         usage($defaultConfigFile);
     }
     $activityName = $options['A'];
@@ -314,7 +314,7 @@ function check_input_parameters(&$defaultConfigFile)
     // Activity version
     if (!isset($options['V']))
     {
-        echo "ERROR", basename(__FILE__), "You must provide an Activity version";
+        echo "ERROR: You must provide an Activity version\n";
         usage($defaultConfigFile);
     }
     $activityVersion = $options['V'];

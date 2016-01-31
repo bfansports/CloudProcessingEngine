@@ -47,7 +47,8 @@ class InputPoller
     private $cpeLogger;
     private $typesMap;
     
-    const INVALID_JSON = "INVALID_JSON"; 
+    const INVALID_JSON   = "INVALID_JSON"; 
+    const INVALID_CONFIG = "INVALID_CONFIG";
     
     public function __construct($config)
     {
@@ -83,6 +84,10 @@ class InputPoller
     // If a msg is received, we pass it to 'handle_input' for processing
     public function poll_SQS_queues()
     {
+        if (!isset($this->config->{'clients'}))
+            throw new CpeSdk\CpeException("Clients configuration invalid. Check the config file or your parameters.",
+                self::INVALID_CONFIG);
+        
         // For all clients in config files
         // We poll from queues
         foreach ($this->config->{'clients'} as $client)
