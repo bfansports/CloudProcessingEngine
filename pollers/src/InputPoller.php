@@ -1,3 +1,5 @@
+#!/usr/bin/php
+
 <?php
 
 /* Copyright (C) 2015, Sport Archive Inc. */
@@ -243,65 +245,51 @@ $cpeLogger;
 
 function usage($defaultConfigFile)
 {
-    echo("Usage: php ". basename(__FILE__) . " [-h] [-d] [-n <client_name>] [-l <log path>] -c <config_file path>\n");
+    echo("# Description\nThe InputPoller connects your client applications to your stack. It handles communication over the two SQS channels you created for your client application.\n\n");
+    echo("Usage: php ". basename(__FILE__) . " [-h] [-d] -n <client_name> [-l <log path>]\n");
     echo("-h: Print this help\n");
     echo("-d: Debug mode\n");
     echo("-l <log_path>: Location where logs will be dumped in (folder).\n");
-    echo("-n <client_name>: Rather than using a config file, get client from INPUT_QUEUE and OUTPUT_QUEUE environment variables\n");
-    echo("-c <config_file path>: Optional parameter to override the default configuration file: '$defaultConfigFile'.\n");
+    echo("-n <client_name> [mandatory]: The name of the client application that will use this Poller to communicate with the stack. The client will be sending and listenening to the Stack through SQS. We expect the INPUT_QUEUE and OUTPUT_QUEUE environment variables set to the URL of the SQS queues.\n");
     exit(0);
 }
 
-function check_input_parameters(&$defaultConfigFile)
+function check_input_parameters()
 {
     global $debug;
     global $cpeLogger;
     
     // Handle input parameters
-    $options = getopt("c:l:hdn:");
+    $options = getopt("l:hdn:");
 
     if (isset($options['h']))
-        usage($defaultConfigFile);
+        usage();
     
-    if (isset($options['d']))
+    if (isset($options['d'])) 
         $debug = true;
-    
+        
     $logPath = null;
     if (isset($options['l']))
     {
         $logPath = $options['l'];
     }
-    $cpeLogger = new CpeSdk\CpeLogger($logPath);
     
-    if (isset($options['c']))
+    if (!isset($options['n']))
     {
-        $cpeLogger->log_out(
-            "INFO", 
-            basename(__FILE__), 
-            "Config file: '" . $options['c'] . "'"
-        );
-        $defaultConfigFile = $options['c'];
+        print "[ERROR] You must provide a [-n client_name] parameter to provide your client application name.\n";
+        exit(1);
     }
-
+    
+    $cpeLogger = new CpeSdk\CpeLogger($logPath, $options['n'], $debug);
+        
     $config = new \stdClass;
-    if (!isset($options['n'])) {
-        if (!($config = json_decode(file_get_contents($defaultConfigFile)))) {
-            throw new CpeSdk\CpeException(
-                "Configuration file '$defaultConfigFile' invalid!"
-            );
-        }
-    }
-
-    if (isset($options['n']))
-    {
-        $config->clients = [(object)[
+    $config->clients = [(object)[
             'name' => $options['n'],
             'queues' => (object)[
                 'input' => getenv('INPUT_QUEUE'),
                 'output' => getenv('OUTPUT_QUEUE'),
             ],
         ]];
-    }
 
     # Validate against JSON Schemas
     # if (($err = validate_json($config, "config/mainConfig.json")))
@@ -310,10 +298,7 @@ function check_input_parameters(&$defaultConfigFile)
     return $config;
 }
 
-// Get config file
-$defaultConfigFile =
-    realpath(dirname(__FILE__)) . "/../config/cpeConfig.json";
-$config = check_input_parameters($defaultConfigFile);
+$config = check_input_parameters();
 $cpeLogger->log_out("INFO", basename(__FILE__), $config);
 
 // Create InputPoller object
@@ -329,6 +314,9 @@ catch (CpeSdk\CpeException $e) {
     );
     exit(1);
 }
+
+$cpeLogger->log_out("INFO", __DIR__, "Start Listening.");
+print "Start polling ...\n";
 
 // Start polling loop to get incoming commands from SQS input queues
 while (42)
