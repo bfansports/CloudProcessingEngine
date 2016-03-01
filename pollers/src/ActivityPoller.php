@@ -1,3 +1,5 @@
+#!/usr/bin/php
+
 <?php
 
 /* Copyright (C) 2015, Sport Archive Inc. */
@@ -78,8 +80,16 @@ class ActivityPoller
         $this->cpeSwfHandler   = new CpeSdk\Swf\CpeSwfHandler($this->debug);
         
         // Check and load activities to handle
-        if (!$this->register_activities())
-            die("No activity class registered! Check the logs (/var/tmp/logs/cpe/). Exiting ...\n");
+        if (!$this->register_activities()) {
+            $msg = "No activity class registered! Check the logs (/var/tmp/logs/cpe/). Exiting ...\n";
+            $cpeLogger->log_out(
+                "FATAL", 
+                basename(__FILE__),
+                $msg
+            );
+            print $msg;
+            exit(1);
+        }
     }
     
     // We poll for new activities
@@ -204,6 +214,11 @@ class ActivityPoller
                 require_once $activityToHandle->{"file"};
                 
                 // Instantiate the Activity class that will process Tasks
+
+                if (!isset($this->cpeLogger) ||
+                    !$this->cpeLogger)
+                    print "EMPTY !!!\n";
+                
                 $this->activityHandler = 
                     new $activityToHandle->{"class"}(
                         [
@@ -234,9 +249,11 @@ class ActivityPoller
 
 
 
-/**
+/*
+ ***************************
  * POLLER START
- */
+ ***************************
+*/
 
 // Globals
 $debug = false;
@@ -245,15 +262,15 @@ $cpeLogger;
 // Usage
 function usage($defaultConfigFile)
 {
-    echo("Usage: php ". basename(__FILE__) . " -D <domain> -T <task_list> -A <activity_name> -V <activity_version> [-h] [-d] [-c <config_file path>] [-l <log path>]\n");
+    echo("Usage: php ". basename(__FILE__) . " -D <domain> -A <activity_name> -V <activity_version> [-T <task_list>] [-h] [-d] [-c <config_file path>] [-l <log path>]\n");
     echo("-h: Print this help\n");
     echo("-d: Debug mode\n");
     echo("-c <config_file path>: Optional parameter to override the default configuration file: '$defaultConfigFile'.\n");
     echo("-l <log_path>: Location where logs will be dumped in (folder).\n");
     echo("-D <domain>: SWF domain your Workflow runs on.\n");
-    echo("-T <task list>: Specify the Activity Task List this activity will listen to. An Activity Task list is the queue your Activity poller will listen to for new tasks.\n");
-    echo("-A <activity name>: Activity name this Poller can process.\n");
-    echo("-V <activity version>: Activity version this Poller can process.\n");
+    echo("-A <activity_name>: Activity name this Poller can process.\n");
+    echo("-V <activity_version>: Activity version this Poller can process.\n");
+    echo("-T <task list>: Specify the Activity Task List this activity will listen to. An Activity Task list is the queue your Activity poller will listen to for new tasks. If not specified, it will listen to the default channel used by the Decider : 'activity_name-activity_version'.\n");
     exit(0);
 }
 
@@ -288,14 +305,6 @@ function check_input_parameters(&$defaultConfigFile)
     }
     $domain = $options['D'];
 
-    // Tasklist
-    if (!isset($options['T']))
-    {
-        echo "ERROR: You must provide a TaskList\n";
-        usage($defaultConfigFile);
-    }
-    $taskList = $options['T'];
-
     // Activity name
     if (!isset($options['A']))
     {
@@ -309,7 +318,7 @@ function check_input_parameters(&$defaultConfigFile)
     {
         $logPath = $options['l'];
     }
-    $cpeLogger = new CpeSdk\CpeLogger($logPath, $activityName);
+    $cpeLogger = new CpeSdk\CpeLogger($logPath, $activityName, $debug);
     
     // Activity version
     if (!isset($options['V']))
@@ -318,21 +327,38 @@ function check_input_parameters(&$defaultConfigFile)
         usage($defaultConfigFile);
     }
     $activityVersion = $options['V'];
-
+    
+    // Tasklist
+    if (!isset($options['T']))
+    {
+        $taskList = $options['A'].'-'.$options['V'];
+    } else {
+        $taskList = $options['T'];
+    }
+    
     // OVerrride config file
     if (isset($options['c']))
     {
-        $cpeLogger->log_out("INFO", basename(__FILE__),
-                            "Config file: '" . $options['c'] . "'");
+        $cpeLogger->log_out(
+            "INFO",
+            basename(__FILE__),
+            "Config file: '" . $options['c'] . "'");
         $defaultConfigFile = $options['c'];
     }
 
-    // Check config file
-    if (!($config = json_decode(file_get_contents($defaultConfigFile))))
-    {
-        die("Configuration file '$defaultConfigFile' invalid!");
+    try {
+        // Check config file
+        if (!($config = json_decode(file_get_contents($defaultConfigFile))))
+        {
+            print "\n[CONFIG ISSUE]\nConfiguration file '$defaultConfigFile' invalid or non-existant.\n\n[EASY FIX]\nGo to the directory mentioned in the error above and rename the template file 'cpeConfigTemplate.json' to 'cpeConfig.json'. Configure your Activities. As example you have Activities for CloudTranscode already setup in the template. You can declare your Activities and start executing tasks in an SWF workflow.\n";
+            exit(1);
+        }
     }
-
+    catch (Exception $e) {
+        print $e;
+    }
+            
+        
     # Validate against JSON Schemas
     # if (($err = validate_json($config, "config/mainConfig.json")))
     # exit("JSON main configuration file invalid! Details:\n".$err);
