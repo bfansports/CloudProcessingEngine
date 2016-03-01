@@ -16,7 +16,7 @@ Before getting started, you need a good understanding of those two services. Rea
 # How to use it?
 
 To use CPE, you need to deploy the CPE stack which is composed of three components:
-   - **Decider:** Listens to Amazon SWF and make decision on "what's next" in your workflow.
+   - **Decider:** Listens to Amazon SWF and make decision on "what's next" in your workflow. The decider is not in this repository. It can be accessed here: https://github.com/sportarchive/CloudProcessingEngine-Decider
    - **InputPoller:** Listens to Amazon SQS for commands from your client applications. Your client apps can start new workflows by sending a `start_job` command along with some JSON payload.
    - **ActivityPoller:** Listens to SWF for incoming tasks. An ActivityPoller is a worker processing a certain type of ActivityTask (Read SWF doc). You can have many running. They all listen on a particular queue (TaskList) and only process tasks assign to them by SWF.
 
