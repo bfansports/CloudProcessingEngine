@@ -22,14 +22,13 @@ Just clone the CPE project locally somewhere:
 
     $> git clone https://github.com/sportarchive/CloudProcessingEngine.git
 
-The "decider" folder in the project is a Git sub module. You must initialize it.
+The CPE project is built in PHP and includes the ActivityPoller and InputPoller scripts.
 
-    $> git submodule update decider
+Then install the "decider" project in another location:
 
-Check if the "decider" folder contains the proper code. You can make sure it is up to date (in case the module reference is outdated) by running:
+    $> git clone https://github.com/sportarchive/CloudProcessingEngine-Decider
 
-    $> cd decider
-    $> git pull origin master
+The Decider is built in Python and includes the Decider that communicates with SWF and starts Activities.
 
 ### Install activities
 
