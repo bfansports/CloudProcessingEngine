@@ -185,13 +185,17 @@ class InputPoller
         // $message->{'data'}->{'workflow'}->{'domain'} MUST be contained in the JSON input
         try {
             $workflowId = uniqid('', true);
-            $workflowRunId = $this->cpeSwfHandler->swf->startWorkflowExecution(array(
-                    "domain"       => $message->{'data'}->{'workflow'}->{'domain'},
-                    "workflowId"   => $workflowId,
-                    "workflowType" => $workflowType,
-                    "taskList"     => array("name" => $message->{'data'}->{'workflow'}->{'taskList'}),
-                    "input"        => json_encode($message->{'data'})
-                ));
+            $payload = array(
+                "domain"       => $message->{'data'}->{'workflow'}->{'domain'},
+                "workflowId"   => $workflowId,
+                "workflowType" => $workflowType,
+                "taskList"     => array("name" => $message->{'data'}->{'workflow'}->{'taskList'}),
+                "input"        => json_encode($message->{'data'})
+            );
+            if (isset($message->{'data'}->{'workflow'}->{'executionStartToCloseTimeout'})) 
+                $payload["executionStartToCloseTimeout"] =
+                    $message->{'data'}->{'workflow'}->{'executionStartToCloseTimeout'};
+            $workflowRunId = $this->cpeSwfHandler->swf->startWorkflowExecution($payload);
 
             $this->cpeLogger->log_out(
                 "INFO",
