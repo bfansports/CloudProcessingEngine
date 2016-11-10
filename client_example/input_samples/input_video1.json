@@ -3,7 +3,8 @@
         "name": "Transcode",
         "version": "1.0",
         "taskList": "basic_transcode",
-        "domain": "SADomain"
+        "domain": "SADomain",
+	"executionStartToCloseTimeout": 2592000
     },
     "input_asset": {
 	"type": "VIDEO",

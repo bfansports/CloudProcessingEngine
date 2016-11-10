@@ -1,9 +1,9 @@
 {
     "workflow": {
-        "name": "SATranscodeImages",
-        "version": "3.0",
-        "taskList": "sa_transcode_images",
-        "domain": "DevDomain"
+        "name": "SATranscodeAssets",
+        "version": "1.0",
+        "taskList": "sa_transcode_assets",
+        "domain": "SADomain"
     },
     "input_asset": {
 	"type": "IMAGE",

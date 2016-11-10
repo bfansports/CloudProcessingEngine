@@ -4,6 +4,10 @@
             "name": "ValidateAsset",
             "version": "v2",
             "description": "Check input command and asset to be transcoded.",
+	    "defaultTaskHeartbeatTimeout": "60",
+	    "defaultTaskStartToCloseTimeout": "NONE",
+	    "defaultTaskScheduleToStartTimeout": "NONE",
+	    "defaultTaskScheduleToCloseTimeout": "NONE",
             "file": "[YOUR CT PATH]/activities/ValidateAssetActivity.php",
             "class": "ValidateAssetActivity"
         },
@@ -11,6 +15,10 @@
             "name": "TranscodeAsset",
             "version": "v2",
             "description": "Perform transcoding on input asset and generate output file(s)",
+	    "defaultTaskHeartbeatTimeout": "60",
+	    "defaultTaskStartToCloseTimeout": "NONE",
+	    "defaultTaskScheduleToStartTimeout": "NONE",
+	    "defaultTaskScheduleToCloseTimeout": "NONE",
             "file": "[YOUR CT PATH]/activities/TranscodeAssetActivity.php",
             "class": "TranscodeAssetActivity"
         }

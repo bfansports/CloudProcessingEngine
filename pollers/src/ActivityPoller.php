@@ -218,14 +218,28 @@ class ActivityPoller
                 if (!isset($this->cpeLogger) ||
                     !$this->cpeLogger)
                     print "EMPTY !!!\n";
+
+                $params = [
+                    "domain"  => $this->domain,
+                    "name"    => $activityToHandle->{"name"},
+                    "version" => $activityToHandle->{"version"}
+                ];
+                if (isset($activityToHandle->{"defaultTaskStartToCloseTimeout"}))
+                    $params["defaultTaskStartToCloseTimeout"] =
+                        $activityToHandle->{"defaultTaskStartToCloseTimeout"};
+                if (isset($activityToHandle->{"defaultTaskHeartbeatTimeout"}))
+                    $params["defaultTaskHeartbeatTimeout"] =
+                        $activityToHandle->{"defaultTaskHeartbeatTimeout"};
+                if (isset($activityToHandle->{"defaultTaskScheduleToStartTimeout"}))
+                    $params["defaultTaskScheduleToStartTimeout"] =
+                        $activityToHandle->{"defaultTaskScheduleToStartTimeout"};
+                if (isset($activityToHandle->{"defaultTaskScheduleToCloseTimeout"}))
+                    $params["defaultTaskScheduleToCloseTimeout"] =
+                        $activityToHandle->{"defaultTaskScheduleToCloseTimeout"};
                 
                 $this->activityHandler = 
                     new $activityToHandle->{"class"}(
-                        [
-                            "domain"  => $this->domain,
-                            "name"    => $activityToHandle->{"name"},
-                            "version" => $activityToHandle->{"version"}
-                        ], 
+                        $params, 
                         $this->debug,
                         $this->cpeLogger
                     );
