@@ -21,9 +21,30 @@ We will show how to start them with and without Docker. Running without Docker r
 
 #### Decider
 
-##### Without Docker
+##### Build a docker image
 
-> Install the Python dependencies by running `./setup.py install`
+You can start the Decider daemon by hand or wrap it in a Docker image. Here is some information about how to create a Docker image in order to run the Decider.
+
+Create a folder where you put:
+
+   - `configs/`: folder that contains your config files
+   - `CloudProcessingEngine-Decider/`: folder that contains a CloudProcessingEngine-Decider repo clone. This project contains already a Dockerfile that will launch the Decider for you
+   - A New Dockerfile that references the base image and copies the configs in the image. We don't want to put the config in the base image as they contain custom info.
+
+The Docker file should look as follow:
+
+```
+FROM sportarc/cloudprocessingengine-decider:latest
+MAINTAINER Sport Archive, Inc.
+
+COPY configs/* /etc/cloudprocessingengine/
+```
+
+This builds another image on top of the base image. This new image contains your configs and the CPE Decider code.
+
+##### Decider command line
+
+> If not using Docker, Install the Python dependencies by running `./setup.py install`
 
 Let's start the decider:
 
@@ -36,19 +57,96 @@ Let's start the decider:
 This command starts the decider in the background and will tail the logs so you can see what's going on.
 
 The decider loads the ct_plan.yml. It will process workflows for the `MyDomain` domain and will listen to Decision TaskList `basic_transcode`. Only jobs sent to this domain and for this TaskList will be processed by this Decider.
- 
-##### With Docker
 
-FIXME
+If you use Docker, pass the correct arguments to `Docker run` in order to start the decider correctly.
+
+#### Daemons Pollers
+
+There are two Pollers:
+
+   - InputPoller: Listens to SQS queues and start ay workflows. 
+   - ActivityPoller: Processes an Activity Task
+
+Both are part of the same CPE code base.
+
+##### Build a docker image
+
+You can start the Pollers by hand or wrap them in a Docker image. Here is some information about how to create a Docker image in order to run the two pollers.
+
+Create a folder where you put:
+
+   - `configs/`: folder that contains your config files. Transcoding configurations such as this:
+   
+`configs/TranscodeAsset-Assets-v6.json`:
+
+```
+{
+    "activities": [
+        {
+            "name": "TranscodeAsset",
+            "version": "v6",
+            "description": "Perform transcoding on media assets and generate output vide
+os or images",
+	    "defaultTaskStartToCloseTimeout": "NONE",
+	    "defaultTaskScheduleToStartTimeout": "NONE",
+	    "defaultTaskScheduleToCloseTimeout": "NONE",
+            "file": "/usr/src/cloudtranscode/src/activities/TranscodeAssetActivity.php",
+            "class": "TranscodeAssetActivity"
+        }
+    ]
+}
+```
+
+   - `CloudProcessingEngine-Pollers/`: folder that contains a CloudProcessingEngine-Pollers repo clone. This project contains already a base Dockerfile that will launch the requested pollers for you
+   - `CloudTranscode/`: folder that contains a CloudTranscode repo clone. This project contains source code for CT and the logic for transcoding. The config files must reference those PHP files. Here they will go into: `/usr/src/cloudtranscode/`. We will configure our Dockerfile to copy them there.
+   - A New Dockerfile that references the base CloudTranscode image that contains all the FFMpeg libraries, copies the configs in the image, copies CPE code, and CT code too. We don't want to put the config in the base image as they contain custom info. The base image only contains FFMpeg libraries, we built it for you.
+
+This base image is located on Dockerhub here: https://hub.docker.com/r/sportarc/cloudtranscode-base/
+
+The new Docker file you put in your folder should look as follow:
+
+```
+FROM sportarc/cloudtranscode-base:latest
+MAINTAINER Sport Archive, Inc.
+
+RUN echo "date.timezone = UTC" >> /usr/local/etc/php/conf.d/timezone.ini
+RUN apt-get update \
+    && apt-get install -y zlib1g-dev autoconf \
+    && docker-php-ext-install zip
+
+COPY CloudProcessingEngine-Pollers/pollers /usr/src/cloudprocessingengine
+WORKDIR /usr/src/cloudprocessingengine
+RUN DEBIAN_FRONTEND=noninteractive TERM=screen \
+    apt-get update \
+    && apt-get install -y git \
+    && make \
+    && apt-get purge -y git \
+    && apt-get autoremove -y
+
+COPY CloudTranscode /usr/src/cloudtranscode
+WORKDIR /usr/src/cloudtranscode
+RUN DEBIAN_FRONTEND=noninteractive TERM=screen \
+    apt-get update \
+    && apt-get install -y git \
+    && make \
+    && apt-get purge -y git \
+    && apt-get autoremove -y
+
+COPY configs/* /etc/cloudtranscode/
+
+ENTRYPOINT ["/usr/src/cloudprocessingengine/bootstrap.sh"]
+
+```
+
+This builds another image on top of the base FFMpeg image `cloudtranscode-base`. This new image contains your configs, the CPE poller code and the CT transcoding logic.
 
 
-#### InputPoller
+#### InputPoller command line
 
-To run this command, you must have the default configuration file `cpeConfig.json` all set in the `pollers/config/` folder.
+To run this command, you must have the default configuration file `cpeConfig.json` all set in the `pollers/config/` folder or use the -c to reference a config file.
+If you use Docker as above, then your configs will but copied to `/etc/cloudtranscode/myconf.json`
 
-##### Without Docker
-
-> Install the PHP dependencies by running `make` in the `CloudProcessingEngine/pollers` folder
+> If you don't use Docker, Install the PHP dependencies by running `make` in the `CloudProcessingEngine/pollers` folder
 
 ```
     $> cd CloudProcessingEngine/pollers
@@ -58,18 +156,15 @@ To run this command, you must have the default configuration file `cpeConfig.jso
 
 When your client app will send a new job to the stack you will see it being picked up here.
 
-##### With Docker
+If you use Docker, then use this arguments to start the poller
 
-FIXME
+`InputPoller -n my_client -l /var/log/pollers/ -d`
 
+#### ActivityPoller command line
 
-#### ActivityPoller
+To run these commands, you must have the default configuration file `cpeConfig.json` all set in the `pollers/config/` folder or use the -c to reference a config file.
 
-To run these commands, you must have the default configuration file `cpeConfig.json` all set in the `pollers/config/` folder.
-
-##### Without Docker
-
-> Install the PHP dependencies by running `make` in the `CloudProcessingEngine/pollers` folder.
+> If you don't use Docker, Install the PHP dependencies by running `make` in the `CloudProcessingEngine/pollers` folder.
 
 > **IMPORTANT:** The Cloud Transcode activities also have dependencies. Without Docker you need to install them as well. Go to the `CloudTranscode` project and run `make` as well.
 
@@ -91,15 +186,17 @@ When this worker receives a task to process you will see output in the log file.
     $> tail -f /var/tmp/logs/cpe/ActivityPoller.php-TranscodeAsset.log
 ```
 
-##### With Docker
+If you use Docker, then use this arguments to start the poller
 
-FIXME 
+`InputPoller -n my_client -l /var/log/pollers/ -d`
+
+`ActivityPoller -c /etc/cloudtranscode/my_config.json -D MY_SWFDomain -T MyTaskDef-version -A MyActivity -V activityVersion -l /var/log/pollers/ -d`
 
 ### Logs
 
 Without Docker, all the logs are in `/var/tmp/logs/cpe`. 
 
-FIXME for Docker
+With Docker you can control where your logs are going.
 
 <br>
 
