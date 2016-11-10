@@ -58,7 +58,9 @@ This command starts the decider in the background and will tail the logs so you 
 
 The decider loads the ct_plan.yml. It will process workflows for the `MyDomain` domain and will listen to Decision TaskList `basic_transcode`. Only jobs sent to this domain and for this TaskList will be processed by this Decider.
 
-If you use Docker, pass the correct arguments to `Docker run` in order to start the decider correctly.
+If you use Docker, then use the following argument to pass tor `Docker run`:
+
+` --domain My_SWFDomain --task_list my_SWFTaskList --plan /etc/cloudprocessingengine/my_plan.yml --log_file /var/log/deciders/decider.log --output_queue https://sqs.us-east-1.amazonaws.com/xxxxxxxx/CloudProcessingEngine-OutputQueue`
 
 #### Daemons Pollers
 
@@ -186,9 +188,7 @@ When this worker receives a task to process you will see output in the log file.
     $> tail -f /var/tmp/logs/cpe/ActivityPoller.php-TranscodeAsset.log
 ```
 
-If you use Docker, then use this arguments to start the poller
-
-`InputPoller -n my_client -l /var/log/pollers/ -d`
+If you use Docker, then use this arguments to start the poller with `Docker run`
 
 `ActivityPoller -c /etc/cloudtranscode/my_config.json -D MY_SWFDomain -T MyTaskDef-version -A MyActivity -V activityVersion -l /var/log/pollers/ -d`
 
