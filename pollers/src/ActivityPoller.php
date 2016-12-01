@@ -38,7 +38,6 @@
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
-use Aws\Swf\Exception;
 use SA\CpeSdk;
 
 class ActivityPoller

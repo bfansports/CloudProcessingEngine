@@ -1,5 +1,5 @@
 {
     "require": {
-	"sportarchive/cloud-processing-engine-client-sdk-php": "dev-master"
+	"sportarchive/cloud-processing-engine-client-sdk-php": "2.0"
     }
 }

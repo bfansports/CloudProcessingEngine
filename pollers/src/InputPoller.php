@@ -36,7 +36,6 @@
 
 require_once __DIR__ . "/../vendor/autoload.php";
 
-use Aws\Swf\Exception;
 use SA\CpeSdk;
 
 class InputPoller
@@ -205,12 +204,6 @@ class InputPoller
             // Send WORKFLOW_SCHEDULED message back to client
             $this->cpeSqsWriter->workflow_scheduled($workflowType, $workflowRunId->get('runId'), $workflowId, $message);
                 
-        } catch (\Aws\Swf\Exception\SwfException $e) {
-            $this->cpeLogger->log_out(
-                "ERROR",
-                basename(__FILE__),
-                "Unable to start workflow!"
-                . $e->getMessage());
         } catch (\Exception $e) {
             $this->cpeLogger->log_out(
                 "ERROR", 
