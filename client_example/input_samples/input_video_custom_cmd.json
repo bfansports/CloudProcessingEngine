@@ -1,8 +1,8 @@
 {
     "workflow": {
-        "name": "Transcode",
-        "version": "1.0",
-        "taskList": "basic_transcode",
+        "name": "SATranscodeVideos",
+        "version": "4.0",
+        "taskList": "sa_transcode_assets",
         "domain": "SADomain"
     },
     "input_asset": {

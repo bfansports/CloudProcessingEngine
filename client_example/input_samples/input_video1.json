@@ -1,10 +1,9 @@
 {
     "workflow": {
-        "name": "Transcode",
-        "version": "1.0",
-        "taskList": "basic_transcode",
-        "domain": "SADomain",
-	"executionStartToCloseTimeout": 2592000
+        "name": "SAValidate",
+        "version": "4.0",
+        "taskList": "sa_validate_assets",
+        "domain": "SADomain"
     },
     "input_asset": {
 	"type": "VIDEO",

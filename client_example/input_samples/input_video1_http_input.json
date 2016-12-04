@@ -1,6 +1,6 @@
 {
     "workflow": {
-        "name": "Transcode",
+        "name": "SATranscode",
         "version": "1.0",
         "taskList": "basic_transcode",
         "domain": "SADomain"
